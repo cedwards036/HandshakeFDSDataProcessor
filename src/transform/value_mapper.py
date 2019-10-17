@@ -1,4 +1,4 @@
-class ValueReplacer:
+class ValueMapping:
 
     def __init__(self):
         self._mapping = {}
@@ -6,7 +6,7 @@ class ValueReplacer:
     def add_mapping(self, value, replacement):
         self._mapping[value] = replacement
 
-    def replace(self, value):
+    def get_mapping(self, value):
         try:
             return self._mapping[value]
         except KeyError:
