@@ -75,6 +75,14 @@ class SurveyResponse:
         }
 
     @property
+    def username(self) -> str:
+        return self._data['username']
+
+    @username.setter
+    def username(self, new_username: str):
+        self._data['username'] = new_username
+
+    @property
     def unpaid_internships_count(self) -> int:
         return self._data['unpaid_internships_count']
 
