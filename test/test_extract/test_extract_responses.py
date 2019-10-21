@@ -212,13 +212,13 @@ class TestExtractResponses(unittest.TestCase):
     def test_date_fields_are_parsed_into_datetime_objects(self):
         response = parse_response(self.test_response_3)
         self.assertEqual(datetime(2018, 10, 5, 14, 30, 6), response.response_datetime_utc)
-        self.assertEqual(datetime(2017, 4, 20), response.offer_date)
-        self.assertEqual(datetime(2017, 4, 28), response.accept_date)
-        self.assertEqual(datetime(2017, 5, 25), response.start_date)
+        self.assertEqual(datetime(2017, 4, 20), response.employment_data.offer_date)
+        self.assertEqual(datetime(2017, 4, 28), response.employment_data.accept_date)
+        self.assertEqual(datetime(2017, 5, 25), response.employment_data.start_date)
 
     def test_empty_date_fields_are_parsed_into_none(self):
         response = parse_response(self.test_response_1)
         self.assertEqual(datetime(2018, 7, 19, 18, 19, 31), response.response_datetime_utc)
-        self.assertIsNone(response.offer_date)
-        self.assertIsNone(response.accept_date)
-        self.assertIsNone(response.start_date)
+        self.assertIsNone(response.employment_data.offer_date)
+        self.assertIsNone(response.employment_data.accept_date)
+        self.assertIsNone(response.employment_data.start_date)

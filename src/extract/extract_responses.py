@@ -12,7 +12,7 @@ def extract_raw_responses(filepath: str) -> List[dict]:
 def parse_response(raw_response: dict) -> SurveyResponse:
     response = SurveyResponse()
     response.response_datetime_utc = DatetimeParser(raw_response['Response Date']).parse()
-    response.offer_date = DateParser(raw_response['Offer Date']).parse()
-    response.accept_date = DateParser(raw_response['Accept Date']).parse()
-    response.start_date = DateParser(raw_response['Start Date']).parse()
+    response.employment_data.offer_date = DateParser(raw_response['Offer Date']).parse()
+    response.employment_data.accept_date = DateParser(raw_response['Accept Date']).parse()
+    response.employment_data.start_date = DateParser(raw_response['Start Date']).parse()
     return response

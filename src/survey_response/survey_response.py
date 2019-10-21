@@ -1,33 +1,13 @@
 from copy import deepcopy
 from datetime import datetime
-from typing import Union
 
-
-class IntResponse:
-
-    def __init__(self, value: Union[int, None]):
-        self._value = value
-
-    @property
-    def value(self) -> Union[int, None]:
-        return self._value
-
-    def __add__(self, other):
-        return self._add(other)
-
-    def __radd__(self, other):
-        return self._add(other)
-
-    def _add(self, other):
-        if self._value == None:
-            return other
-        else:
-            return self._value + other
+from src.survey_response.employment_data import EmploymentData
 
 
 class SurveyResponse:
 
     def __init__(self):
+        self.employment_data = EmploymentData()
         self._data = {
             'response_id': None,
             'username': None,
@@ -47,9 +27,6 @@ class SurveyResponse:
             'job_title': None,
             'found_through_handshake': None,
             'employed_during_education': None,
-            'offer_date': None,
-            'accept_date': None,
-            'start_date': None,
             'salary': None,
             'bonus_amount': None,
             'other_compensation': None,
@@ -87,29 +64,6 @@ class SurveyResponse:
     def response_datetime_utc(self, new_datetime: datetime):
         self._data['response_datetime_utc'] = new_datetime
 
-    @property
-    def offer_date(self) -> datetime:
-        return self._data['offer_date']
-
-    @offer_date.setter
-    def offer_date(self, new_date: datetime):
-        self._data['offer_date'] = new_date
-
-    @property
-    def accept_date(self) -> datetime:
-        return self._data['accept_date']
-
-    @accept_date.setter
-    def accept_date(self, new_date: datetime):
-        self._data['accept_date'] = new_date
-
-    @property
-    def start_date(self) -> datetime:
-        return self._data['start_date']
-
-    @start_date.setter
-    def start_date(self, new_date: datetime):
-        self._data['start_date'] = new_date
 
     def to_dict(self) -> dict:
         result = deepcopy(self._data)
