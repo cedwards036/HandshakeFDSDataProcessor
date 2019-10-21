@@ -175,8 +175,8 @@ class TestExtractResponses(unittest.TestCase):
             'Employment Type': 'Full-Time',
             'Job Function': 'Healthcare Services',
             'Job Position': 'Medical Scribe',
-            'Found through Handshake': '',
-            'Employed During Education': 'Yes',
+            'Found through Handshake': 'Yes',
+            'Employed During Education': 'No',
             'Internship': '',
             'Continuing Education School': '',
             'Continuing Education Level': '',
@@ -222,3 +222,18 @@ class TestExtractResponses(unittest.TestCase):
         self.assertIsNone(response.employment_data.offer_date)
         self.assertIsNone(response.employment_data.accept_date)
         self.assertIsNone(response.employment_data.start_date)
+
+    def test_parser_parses_employment_fields_correctly(self):
+        response = ResponseParser(self.test_response_3).parse()
+        self.assertEqual('ScribeAmerica', response.employment_data.employer_name)
+        self.assertEqual('Healthcare', response.employment_data.employer_industry)
+        self.assertEqual('Organization', response.employment_data.employment_category)
+        self.assertEqual('Full-Time', response.employment_data.employment_type)
+        self.assertEqual('Healthcare Services', response.employment_data.job_function)
+        self.assertEqual('Medical Scribe', response.employment_data.job_title)
+        self.assertEqual(True, response.employment_data.found_through_handshake)
+        self.assertEqual(False, response.employment_data.employed_during_education)
+        self.assertEqual(27560, response.employment_data.salary)
+        self.assertEqual(0, response.employment_data.bonus_amount)
+        self.assertEqual(0, response.employment_data.other_compensation)
+        self.assertIsNone(response.employment_data.is_internship)
