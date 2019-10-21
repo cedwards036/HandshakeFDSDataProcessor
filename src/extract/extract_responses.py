@@ -1,5 +1,6 @@
 from typing import List
 
+from src.extract.custom_parsers import CustomParser, NullCustomParser
 from src.extract.file_utils import read_csv
 from src.extract.value_parser import (StringParser, DateParser, DatetimeParser,
                                       YesNoParser, IntParser)
@@ -12,14 +13,16 @@ def extract_raw_responses(filepath: str) -> List[dict]:
 
 class ResponseParser:
 
-    def __init__(self, raw_data: dict):
+    def __init__(self, raw_data: dict, custom_questions_parser: CustomParser = NullCustomParser()):
         self._raw_data = raw_data
-        self._response = SurveyResponse()
+        self._response = SurveyResponse(custom_questions_parser.get_questions_class())
+        self._custom_parser = custom_questions_parser
 
     def parse(self) -> SurveyResponse:
         self._response.response_datetime_utc = DatetimeParser(self._raw_data['Response Date']).parse()
         self._parse_employment_fields()
         self._parse_cont_ed_fields()
+        self._parse_custom_fields()
         return self._response
 
     def _parse_employment_fields(self):
@@ -44,3 +47,6 @@ class ResponseParser:
         self._response.cont_ed.school = StringParser(self._raw_data['Continuing Education School']).parse()
         self._response.cont_ed.level = StringParser(self._raw_data['Continuing Education Level']).parse()
         self._response.cont_ed.major = StringParser(self._raw_data['Continuing Education Major']).parse()
+
+    def _parse_custom_fields(self):
+        self._response = self._custom_parser.parse(self._response, self._raw_data)

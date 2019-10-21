@@ -2,14 +2,16 @@ from copy import deepcopy
 from datetime import datetime
 
 from src.survey_response.continuing_education_data import ContinuingEducationData
+from src.survey_response.custom_questions import CustomQuestions, NullCustomQuestions
 from src.survey_response.employment_data import EmploymentData
 
 
 class SurveyResponse:
 
-    def __init__(self):
+    def __init__(self, custom_questions: CustomQuestions = NullCustomQuestions()):
         self.employment = EmploymentData()
         self.cont_ed = ContinuingEducationData()
+        self.custom = custom_questions
         self._data = {
             'response_id': None,
             'username': None,

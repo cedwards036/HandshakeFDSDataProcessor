@@ -2,6 +2,7 @@ import os
 import unittest
 from datetime import datetime
 
+from src.extract.custom_parsers import FDS2018CustomParser
 from src.extract.extract_responses import extract_raw_responses, ResponseParser
 
 FILEPATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_input_data.csv')
@@ -10,6 +11,7 @@ FILEPATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_input_
 class TestExtractResponses(unittest.TestCase):
 
     def setUp(self):
+        self.fds_2018_parser = FDS2018CustomParser()
         self.test_response_1 = {
             'Id': '659754',
             'Username': 'astudent1',
@@ -200,8 +202,8 @@ class TestExtractResponses(unittest.TestCase):
             'Knowledge Response?': '',
             'Knowledge Source': 'Survey Response',
             'At the time you accepted your current position, did you accept it with the intention that it would only be a temporary, “gap year” position, before applying to graduate or professional school in the next year or two?': 'Yes',
-            'During your time at Hopkins, how many *unpaid* internships did you participate in? An internship is a form of experiential education that integrates knowledge and theory learned in the classroom, with practical application and skill development *in a professional, work setting*. ': '0',
-            'During your time at Hopkins, how many *paid* internships did you participate in? An internship is a form of experiential education that integrates knowledge and theory learned in the classroom, with practical application and skill development *in a professional, work setting*.': '0',
+            'During your time at Hopkins, how many *unpaid* internships did you participate in? An internship is a form of experiential education that integrates knowledge and theory learned in the classroom, with practical application and skill development *in a professional, work setting*. ': '3',
+            'During your time at Hopkins, how many *paid* internships did you participate in? An internship is a form of experiential education that integrates knowledge and theory learned in the classroom, with practical application and skill development *in a professional, work setting*.': '1',
             'During your time at Hopkins, how many unique *unpaid* research experiences (outside the classroom) did you participate in? Research is inquiry or investigation conducted by an undergraduate student that makes an original intellectual or creative contribution to a discipline. It can encompass a wide variety of activities including but not limited to: lab research, design projects, entrepreneurship, etc.': '0',
             'During your time at Hopkins, how many unique *paid* research experiences (outside the classroom) did you participate in? Research is inquiry or investigation conducted by an undergraduate student that makes an original intellectual or creative contribution to a discipline. It can encompass a wide variety of activities including but not limited to: lab research, design projects, entrepreneurship, etc.': '2'
         }
@@ -243,3 +245,13 @@ class TestExtractResponses(unittest.TestCase):
         self.assertEqual('Harvard', response.cont_ed.school)
         self.assertEqual('Masters', response.cont_ed.level)
         self.assertEqual('English Literature', response.cont_ed.major)
+
+    def test_2018_parser_parses_custom_questions_correctly(self):
+        response = ResponseParser(self.test_response_3, self.fds_2018_parser).parse()
+        self.assertEqual(True, response.custom.is_gap_year)
+        self.assertEqual(3, response.custom.unpaid_internships_count)
+        self.assertEqual(1, response.custom.paid_internships_count)
+        self.assertEqual(4, response.custom.all_internships_count)
+        self.assertEqual(0, response.custom.unpaid_research_count)
+        self.assertEqual(2, response.custom.paid_research_count)
+        self.assertEqual(2, response.custom.all_research_count)

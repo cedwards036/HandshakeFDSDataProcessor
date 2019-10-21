@@ -1,2 +1,2 @@
-from src.survey_response.custom_questions import CustomQuestions
+from src.survey_response.custom_questions import FDS2018CustomQuestions
 from src.survey_response.survey_response import SurveyResponse
