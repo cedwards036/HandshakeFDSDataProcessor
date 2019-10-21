@@ -1,12 +1,12 @@
 import unittest
 
-from src.survey_response import SurveyResponse
+from src.survey_response import CustomQuestions
 
 
-class TestSurveyResponse(unittest.TestCase):
+class TestCustomQuestions(unittest.TestCase):
 
     def test_all_internships_count_updates_automatically(self):
-        test_response = SurveyResponse()
+        test_response = CustomQuestions()
         self.assertIsNone(test_response.all_internships_count)
         test_response.unpaid_internships_count = 2
         self.assertEqual(2, test_response.all_internships_count)
@@ -16,7 +16,7 @@ class TestSurveyResponse(unittest.TestCase):
         self.assertEqual(13, test_response.all_internships_count)
 
     def test_all_research_count_updates_automatically(self):
-        test_response = SurveyResponse()
+        test_response = CustomQuestions()
         self.assertIsNone(test_response.all_research_count)
         test_response.unpaid_research_count = 2
         self.assertEqual(2, test_response.all_research_count)
