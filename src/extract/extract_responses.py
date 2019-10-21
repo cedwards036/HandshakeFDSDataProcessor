@@ -19,6 +19,7 @@ class ResponseParser:
     def parse(self) -> SurveyResponse:
         self._response.response_datetime_utc = DatetimeParser(self._raw_data['Response Date']).parse()
         self._parse_employment_fields()
+        self._parse_cont_ed_fields()
         return self._response
 
     def _parse_employment_fields(self):
@@ -38,3 +39,8 @@ class ResponseParser:
         self._response.employment_data.offer_date = DateParser(self._raw_data['Offer Date']).parse()
         self._response.employment_data.accept_date = DateParser(self._raw_data['Accept Date']).parse()
         self._response.employment_data.start_date = DateParser(self._raw_data['Start Date']).parse()
+
+    def _parse_cont_ed_fields(self):
+        self._response.cont_ed.school = StringParser(self._raw_data['Continuing Education School']).parse()
+        self._response.cont_ed.level = StringParser(self._raw_data['Continuing Education Level']).parse()
+        self._response.cont_ed.major = StringParser(self._raw_data['Continuing Education Major']).parse()

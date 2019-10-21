@@ -1,6 +1,7 @@
 from copy import deepcopy
 from datetime import datetime
 
+from src.survey_response.continuing_education_data import ContinuingEducationData
 from src.survey_response.employment_data import EmploymentData
 
 
@@ -8,6 +9,7 @@ class SurveyResponse:
 
     def __init__(self):
         self.employment_data = EmploymentData()
+        self.cont_ed = ContinuingEducationData()
         self._data = {
             'response_id': None,
             'username': None,
@@ -20,11 +22,6 @@ class SurveyResponse:
             'response_datetime_utc': None,
             'outcome': None,
             'is_authorized_to_work_in_us': None,
-            'cont_ed_school': None,
-            'cont_ed_level': None,
-            'cont_ed_degree': None,
-            'cont_ed_major': None,
-            'cont_ed_major_group': None,
             'fellowship_org': None,
             'fellowship_name': None,
             'still_seeking_option': None,

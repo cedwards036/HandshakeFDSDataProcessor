@@ -113,9 +113,9 @@ class TestExtractResponses(unittest.TestCase):
             'Found through Handshake': '',
             'Employed During Education': '',
             'Internship': '',
-            'Continuing Education School': '',
-            'Continuing Education Level': '',
-            'Continuing Education Major': '',
+            'Continuing Education School': 'Harvard',
+            'Continuing Education Level': 'Masters',
+            'Continuing Education Major': 'English Literature',
             'Is Fellowship?': 'Yes',
             'Fellowship Name': 'Coro Fellowship',
             'Military Branch': '',
@@ -237,3 +237,9 @@ class TestExtractResponses(unittest.TestCase):
         self.assertEqual(0, response.employment_data.bonus_amount)
         self.assertEqual(0, response.employment_data.other_compensation)
         self.assertIsNone(response.employment_data.is_internship)
+
+    def test_parser_parses_education_fields_correctly(self):
+        response = ResponseParser(self.test_response_2).parse()
+        self.assertEqual('Harvard', response.cont_ed.school)
+        self.assertEqual('Masters', response.cont_ed.level)
+        self.assertEqual('English Literature', response.cont_ed.major)
