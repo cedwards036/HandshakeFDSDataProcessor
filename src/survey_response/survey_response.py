@@ -8,7 +8,7 @@ from src.survey_response.employment_data import EmploymentData
 class SurveyResponse:
 
     def __init__(self):
-        self.employment_data = EmploymentData()
+        self.employment = EmploymentData()
         self.cont_ed = ContinuingEducationData()
         self._data = {
             'response_id': None,
