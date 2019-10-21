@@ -2,7 +2,7 @@ import os
 import unittest
 from datetime import datetime
 
-from src.extract.extract_responses import extract_raw_responses, parse_response
+from src.extract.extract_responses import extract_raw_responses, ResponseParser
 
 FILEPATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_input_data.csv')
 
@@ -37,7 +37,7 @@ class TestExtractResponses(unittest.TestCase):
             'Response Graduation Date': '5/1/2018',
             'Response Primary College': '',
             'Response Status': 'submitted',
-            'Response Date': '2018-07-19 18:19:31 UTC',
+            'Response Date': '',
             'Outcome': 'Still Looking',
             'Employer Name': '',
             'Employer Industry': '',
@@ -210,15 +210,15 @@ class TestExtractResponses(unittest.TestCase):
         self.assertEqual(3, len(extract_raw_responses(FILEPATH)))
 
     def test_date_fields_are_parsed_into_datetime_objects(self):
-        response = parse_response(self.test_response_3)
+        response = ResponseParser(self.test_response_3).parse()
         self.assertEqual(datetime(2018, 10, 5, 14, 30, 6), response.response_datetime_utc)
         self.assertEqual(datetime(2017, 4, 20), response.employment_data.offer_date)
         self.assertEqual(datetime(2017, 4, 28), response.employment_data.accept_date)
         self.assertEqual(datetime(2017, 5, 25), response.employment_data.start_date)
 
     def test_empty_date_fields_are_parsed_into_none(self):
-        response = parse_response(self.test_response_1)
-        self.assertEqual(datetime(2018, 7, 19, 18, 19, 31), response.response_datetime_utc)
+        response = ResponseParser(self.test_response_1).parse()
+        self.assertIsNone(response.response_datetime_utc)
         self.assertIsNone(response.employment_data.offer_date)
         self.assertIsNone(response.employment_data.accept_date)
         self.assertIsNone(response.employment_data.start_date)
