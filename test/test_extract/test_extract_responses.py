@@ -4,6 +4,7 @@ from datetime import datetime
 
 from src.extract.custom_parsers import FDS2018CustomParser
 from src.extract.extract_responses import extract_raw_responses, ResponseParser
+from src.extract.value_parser import JHEDParser
 
 FILEPATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_input_data.csv')
 
@@ -144,7 +145,7 @@ class TestExtractResponses(unittest.TestCase):
         }
         self.test_response_3 = {
             'Id': '659756',
-            'Username': 'cstudent3',
+            'Username': 'HYU4IP',
             'Auth Identifier': 'cstudent3@johnshopkins.edu',
             'Card ID': '6.01E+15',
             'Name': 'Chelsea Student',
@@ -246,6 +247,12 @@ class TestExtractResponses(unittest.TestCase):
         self.assertEqual('Masters', response.cont_ed.level)
         self.assertEqual('English Literature', response.cont_ed.major)
 
+    def test_parser_parses_student_fields_correctly(self):
+        response = ResponseParser(self.test_response_3).parse()
+        self.assertEqual('HYU4IP', response.student.username)
+        self.assertEqual('cstudent3', response.student.jhed)
+        self.assertEqual('Chelsea Student', response.student.full_name)
+
     def test_2018_parser_parses_custom_questions_correctly(self):
         response = ResponseParser(self.test_response_3, self.fds_2018_parser).parse()
         self.assertEqual(True, response.custom.is_gap_year)
@@ -255,3 +262,16 @@ class TestExtractResponses(unittest.TestCase):
         self.assertEqual(0, response.custom.unpaid_research_count)
         self.assertEqual(2, response.custom.paid_research_count)
         self.assertEqual(2, response.custom.all_research_count)
+
+
+class TestJHEDParser(unittest.TestCase):
+
+    def test_throws_exception_on_non_jhed_str(self):
+        with self.assertRaises(JHEDParser.UnexpectedValueException):
+            JHEDParser('some random str').parse()
+
+    def test_parses_jhed_from_auth_id(self):
+        self.assertEqual('cstudent3', JHEDParser('cstudent3@johnshopkins.edu').parse())
+
+    def test_parses_jhed_from_plain_jhed(self):
+        self.assertEqual('cstudent3', JHEDParser('cstudent3').parse())

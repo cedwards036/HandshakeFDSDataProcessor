@@ -3,7 +3,7 @@ from typing import List
 from src.extract.custom_parsers import CustomParser, NullCustomParser
 from src.extract.file_utils import read_csv
 from src.extract.value_parser import (StringParser, DateParser, DatetimeParser,
-                                      YesNoParser, IntParser)
+                                      YesNoParser, IntParser, JHEDParser)
 from src.survey_response import SurveyResponse
 
 
@@ -20,10 +20,16 @@ class ResponseParser:
 
     def parse(self) -> SurveyResponse:
         self._response.response_datetime_utc = DatetimeParser(self._raw_data['Response Date']).parse()
+        self._parse_student_fields()
         self._parse_employment_fields()
         self._parse_cont_ed_fields()
         self._parse_custom_fields()
         return self._response
+
+    def _parse_student_fields(self):
+        self._response.student.username = StringParser(self._raw_data['Username']).parse()
+        self._response.student.jhed = JHEDParser(self._raw_data['Auth Identifier']).parse()
+        self._response.student.full_name = StringParser(self._raw_data['Name']).parse()
 
     def _parse_employment_fields(self):
         self._response.employment.employer_name = StringParser(self._raw_data['Employer Name']).parse()

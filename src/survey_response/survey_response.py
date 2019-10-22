@@ -4,26 +4,21 @@ from datetime import datetime
 from src.survey_response.continuing_education_data import ContinuingEducationData
 from src.survey_response.custom_questions import CustomQuestions, NullCustomQuestions
 from src.survey_response.employment_data import EmploymentData
+from src.survey_response.student_data import StudentData
 
 
 class SurveyResponse:
 
     def __init__(self, custom_questions: CustomQuestions = NullCustomQuestions()):
+        self.student = StudentData()
         self.employment = EmploymentData()
         self.cont_ed = ContinuingEducationData()
         self.custom = custom_questions
         self._data = {
             'response_id': None,
             'username': None,
-            'jhed': None,
-            'full_name': None,
-            'jhu_colleges': [],
-            'jhu_majors': [],
-            'gender': None,
-            'visa_status': None,
             'response_datetime_utc': None,
             'outcome': None,
-            'is_authorized_to_work_in_us': None,
             'fellowship_org': None,
             'fellowship_name': None,
             'still_seeking_option': None,

@@ -1,3 +1,4 @@
+import re
 from abc import ABC, abstractmethod
 from datetime import datetime
 
@@ -57,3 +58,15 @@ class YesNoParser(ValueParser):
             return False
         else:
             raise self.UnexpectedValueException(f'Value was expected to be "Yes", "No", or "", but was "{self._value}" instead')
+
+
+class JHEDParser(ValueParser):
+
+    def parser_func(self):
+        try:
+            return self._extract_jhed_from_valid_value()
+        except AttributeError:
+            raise self.UnexpectedValueException(f'Cannot extract JHED from input value "{self._value}"')
+
+    def _extract_jhed_from_valid_value(self) -> str:
+        return re.match(r'^([a-zA-Z]+\d+)(@johnshopkins\.edu)?$', self._value).groups()[0]
