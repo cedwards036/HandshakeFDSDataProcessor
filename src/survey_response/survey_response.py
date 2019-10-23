@@ -22,15 +22,6 @@ class SurveyResponse:
             'not_seeking_option': None,
         }
 
-    @property
-    def username(self) -> str:
-        return self._data['username']
-
-    @username.setter
-    def username(self, new_username: str):
-        self._data['username'] = new_username
-
-
     def to_dict(self) -> dict:
         result = deepcopy(self._data)
         return result

@@ -11,7 +11,7 @@ class ResponseDataset:
 
     def add_response(self, response: SurveyResponse):
         self._responses.append(response)
-        self._responses_by_username[response.username] = response
+        self._responses_by_username[response.student.username] = response
 
     def get_response_by_username(self, username: str):
         try:
