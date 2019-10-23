@@ -19,10 +19,10 @@ class ResponseParser:
         self._custom_parser = custom_questions_parser
 
     def parse(self) -> SurveyResponse:
-        self._response.response_datetime_utc = DatetimeParser(self._raw_data['Response Date']).parse()
         self._parse_student_fields()
         self._parse_employment_fields()
         self._parse_cont_ed_fields()
+        self._parse_metadata()
         self._parse_custom_fields()
         return self._response
 
@@ -44,7 +44,6 @@ class ResponseParser:
         self._response.employment.bonus_amount = IntParser(self._raw_data['Bonus Amount']).parse()
         self._response.employment.other_compensation = IntParser(self._raw_data['Other Compensation']).parse()
         self._response.employment.is_internship = YesNoParser(self._raw_data['Internship']).parse()
-
         self._response.employment.offer_date = DateParser(self._raw_data['Offer Date']).parse()
         self._response.employment.accept_date = DateParser(self._raw_data['Accept Date']).parse()
         self._response.employment.start_date = DateParser(self._raw_data['Start Date']).parse()
@@ -53,6 +52,15 @@ class ResponseParser:
         self._response.cont_ed.school = StringParser(self._raw_data['Continuing Education School']).parse()
         self._response.cont_ed.level = StringParser(self._raw_data['Continuing Education Level']).parse()
         self._response.cont_ed.major = StringParser(self._raw_data['Continuing Education Major']).parse()
+
+    def _parse_metadata(self):
+        self._response.metadata.response_id = StringParser(self._raw_data['Id']).parse()
+        self._response.metadata.response_datetime_utc = DatetimeParser(self._raw_data['Response Date']).parse()
+        self._response.metadata.outcome = StringParser(self._raw_data['Outcome']).parse()
+        self._response.metadata.location = StringParser(self._raw_data['Location']).parse()
+        self._response.metadata.submitted_by = StringParser(self._raw_data['Submitted By']).parse()
+        self._response.metadata.is_knowledge_response = YesNoParser(self._raw_data['Knowledge Response?']).parse()
+        self._response.metadata.knowledge_source = StringParser(self._raw_data['Knowledge Source']).parse()
 
     def _parse_custom_fields(self):
         self._response = self._custom_parser.parse(self._response, self._raw_data)

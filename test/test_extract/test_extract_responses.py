@@ -200,7 +200,7 @@ class TestExtractResponses(unittest.TestCase):
             'Other Compensation': '0',
             'Authorized to work in US?': 'TRUE',
             'Submitted By': 'Chelsea Student',
-            'Knowledge Response?': '',
+            'Knowledge Response?': 'Yes',
             'Knowledge Source': 'Survey Response',
             'At the time you accepted your current position, did you accept it with the intention that it would only be a temporary, “gap year” position, before applying to graduate or professional school in the next year or two?': 'Yes',
             'During your time at Hopkins, how many *unpaid* internships did you participate in? An internship is a form of experiential education that integrates knowledge and theory learned in the classroom, with practical application and skill development *in a professional, work setting*. ': '3',
@@ -214,14 +214,14 @@ class TestExtractResponses(unittest.TestCase):
 
     def test_date_fields_are_parsed_into_datetime_objects(self):
         response = ResponseParser(self.test_response_3).parse()
-        self.assertEqual(datetime(2018, 10, 5, 14, 30, 6), response.response_datetime_utc)
+        self.assertEqual(datetime(2018, 10, 5, 14, 30, 6), response.metadata.response_datetime_utc)
         self.assertEqual(datetime(2017, 4, 20), response.employment.offer_date)
         self.assertEqual(datetime(2017, 4, 28), response.employment.accept_date)
         self.assertEqual(datetime(2017, 5, 25), response.employment.start_date)
 
     def test_empty_date_fields_are_parsed_into_none(self):
         response = ResponseParser(self.test_response_1).parse()
-        self.assertIsNone(response.response_datetime_utc)
+        self.assertIsNone(response.metadata.response_datetime_utc)
         self.assertIsNone(response.employment.offer_date)
         self.assertIsNone(response.employment.accept_date)
         self.assertIsNone(response.employment.start_date)
@@ -252,6 +252,16 @@ class TestExtractResponses(unittest.TestCase):
         self.assertEqual('HYU4IP', response.student.username)
         self.assertEqual('cstudent3', response.student.jhed)
         self.assertEqual('Chelsea Student', response.student.full_name)
+
+    def test_parser_parses_metadata_correctly(self):
+        response = ResponseParser(self.test_response_3).parse()
+        self.assertEqual('659756', response.metadata.response_id)
+        self.assertEqual(datetime(2018, 10, 5, 14, 30, 6), response.metadata.response_datetime_utc)
+        self.assertEqual('Working', response.metadata.outcome)
+        self.assertEqual('Washington, District of Columbia, United States', response.metadata.location)
+        self.assertEqual('Chelsea Student', response.metadata.submitted_by)
+        self.assertEqual(True, response.metadata.is_knowledge_response)
+        self.assertEqual('Survey Response', response.metadata.knowledge_source)
 
     def test_2018_parser_parses_custom_questions_correctly(self):
         response = ResponseParser(self.test_response_3, self.fds_2018_parser).parse()
