@@ -3,6 +3,7 @@ from copy import deepcopy
 from src.survey_response.continuing_education_data import ContinuingEducationData
 from src.survey_response.custom_questions import CustomQuestions, NullCustomQuestions
 from src.survey_response.employment_data import EmploymentData
+from src.survey_response.fellowship_data import FellowshipData
 from src.survey_response.metadata import Metadata
 from src.survey_response.student_data import StudentData
 
@@ -14,6 +15,7 @@ class SurveyResponse:
         self.employment = EmploymentData()
         self.cont_ed = ContinuingEducationData()
         self.metadata = Metadata()
+        self.fellowship_data = FellowshipData()
         self.custom = custom_questions
         self._data = {
             'fellowship_org': None,

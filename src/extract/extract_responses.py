@@ -23,6 +23,7 @@ class ResponseParser:
         self._parse_employment_fields()
         self._parse_cont_ed_fields()
         self._parse_metadata()
+        self._parse_fellowship_data()
         self._parse_custom_fields()
         return self._response
 
@@ -56,11 +57,31 @@ class ResponseParser:
     def _parse_metadata(self):
         self._response.metadata.response_id = StringParser(self._raw_data['Id']).parse()
         self._response.metadata.response_datetime_utc = DatetimeParser(self._raw_data['Response Date']).parse()
-        self._response.metadata.outcome = StringParser(self._raw_data['Outcome']).parse()
+        self._parse_outcome()
         self._response.metadata.location = StringParser(self._raw_data['Location']).parse()
         self._response.metadata.submitted_by = StringParser(self._raw_data['Submitted By']).parse()
         self._response.metadata.is_knowledge_response = YesNoParser(self._raw_data['Knowledge Response?']).parse()
         self._response.metadata.knowledge_source = StringParser(self._raw_data['Knowledge Source']).parse()
+
+    def _parse_outcome(self):
+        if self._response_is_fellowship():
+            self._response.metadata.outcome = 'Fellowship'
+        else:
+            self._response.metadata.outcome = StringParser(self._raw_data['Outcome']).parse()
+
+    def _parse_fellowship_data(self):
+        self._parse_fellowship_org()
+        self._response.fellowship_data.fellowship_name = StringParser(self._raw_data['Fellowship Name']).parse()
+
+    def _parse_fellowship_org(self):
+        if self._response_is_fellowship():
+            if self._raw_data['Outcome'] == 'Working':
+                self._response.fellowship_data.fellowship_org = StringParser(self._raw_data['Employer Name']).parse()
+            elif self._raw_data['Outcome'] == 'Continuing Education':
+                self._response.fellowship_data.fellowship_org = StringParser(self._raw_data['Continuing Education School']).parse()
+
+    def _response_is_fellowship(self):
+        return self._raw_data['Is Fellowship?'] == 'Yes'
 
     def _parse_custom_fields(self):
         self._response = self._custom_parser.parse(self._response, self._raw_data)

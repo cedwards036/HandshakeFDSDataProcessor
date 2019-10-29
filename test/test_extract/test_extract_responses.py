@@ -263,6 +263,7 @@ class TestExtractResponses(unittest.TestCase):
         self.assertEqual(True, response.metadata.is_knowledge_response)
         self.assertEqual('Survey Response', response.metadata.knowledge_source)
 
+
     def test_2018_parser_parses_custom_questions_correctly(self):
         response = ResponseParser(self.test_response_3, self.fds_2018_parser).parse()
         self.assertEqual(True, response.custom.is_gap_year)
@@ -272,6 +273,148 @@ class TestExtractResponses(unittest.TestCase):
         self.assertEqual(0, response.custom.unpaid_research_count)
         self.assertEqual(2, response.custom.paid_research_count)
         self.assertEqual(2, response.custom.all_research_count)
+
+
+class TestParsingFellowshipResponses(unittest.TestCase):
+
+    def setUp(self) -> None:
+        employment_fellowship = {
+            'Id': '659755',
+            'Username': 'bstudent2',
+            'Auth Identifier': 'bstudent2@johnshopkins.edu',
+            'Card ID': '6.01E+15',
+            'Name': 'Benjamin Student',
+            'School Email': 'bstudent2@jhu.edu',
+            'Personal Email': 'ok_dude_41@gmail.com',
+            'Recipient Primary Major': 'Global Environmental Change and Sustainability',
+            'Recipient Secondary Majors': 'Earth & Planetary Sciences',
+            'Recipient Graduation Date': '5/1/2018',
+            'Recipient Education Level': 'Bachelors',
+            'Recipient Primary College': 'Krieger School of Arts & Sciences',
+            'Recipient Gender': '',
+            'Recipient Ethnicity': '',
+            'Recipient Visa Status': 'U.S. Citizen',
+            'Recipient Veteran Status': '',
+            'Recipient First Generation': '',
+            'Recipient Athlete Status': '',
+            'Recipient Hometown': '',
+            'Recipient Graduation Group Name': '18-May',
+            'Response Primary Major': 'Global Environmental Change and Sustainability',
+            'Response Secondary Majors': '',
+            'Response Education Level': 'Bachelors',
+            'Response Graduation Date': '5/1/2018',
+            'Response Primary College': '',
+            'Response Status': 'submitted',
+            'Response Date': '2019-01-31 19:52:48 UTC',
+            'Outcome': 'Working',
+            'Employer Name': 'Coro',
+            'Employer Industry': '',
+            'Employment Category': 'Fellowship',
+            'Employment Type': 'Full-Time',
+            'Job Function': '',
+            'Job Position': 'Coro Fellow',
+            'Found through Handshake': '',
+            'Employed During Education': '',
+            'Internship': '',
+            'Continuing Education School': 'Harvard',
+            'Continuing Education Level': 'Masters',
+            'Continuing Education Major': 'English Literature',
+            'Is Fellowship?': 'Yes',
+            'Fellowship Name': 'Coro Fellowship',
+            'Military Branch': '',
+            'Military Rank': '',
+            'Specialization': '',
+            'Still Looking Option': '',
+            'Not Seeking Option': '',
+            'Location': 'Pittsburgh, Pennsylvania, United States of America',
+            'Offer Date': '',
+            'Accept Date': '',
+            'Start Date': '',
+            'Salary': '',
+            'Bonus Amount': '',
+            'Other Compensation': '',
+            'Authorized to work in US?': '',
+            'Submitted By': 'James Staffmember',
+            'Knowledge Response?': 'Yes',
+            'Knowledge Source': 'LinkedIn'
+        }
+        cont_ed_fellowship = {
+            'Id': '659755',
+            'Username': 'bstudent2',
+            'Auth Identifier': 'bstudent2@johnshopkins.edu',
+            'Card ID': '6.01E+15',
+            'Name': 'Benjamin Student',
+            'School Email': 'bstudent2@jhu.edu',
+            'Personal Email': 'ok_dude_41@gmail.com',
+            'Recipient Primary Major': 'Global Environmental Change and Sustainability',
+            'Recipient Secondary Majors': 'Earth & Planetary Sciences',
+            'Recipient Graduation Date': '5/1/2018',
+            'Recipient Education Level': 'Bachelors',
+            'Recipient Primary College': 'Krieger School of Arts & Sciences',
+            'Recipient Gender': '',
+            'Recipient Ethnicity': '',
+            'Recipient Visa Status': 'U.S. Citizen',
+            'Recipient Veteran Status': '',
+            'Recipient First Generation': '',
+            'Recipient Athlete Status': '',
+            'Recipient Hometown': '',
+            'Recipient Graduation Group Name': '18-May',
+            'Response Primary Major': 'Global Environmental Change and Sustainability',
+            'Response Secondary Majors': '',
+            'Response Education Level': 'Bachelors',
+            'Response Graduation Date': '5/1/2018',
+            'Response Primary College': '',
+            'Response Status': 'submitted',
+            'Response Date': '2019-01-31 19:52:48 UTC',
+            'Outcome': 'Continuing Education',
+            'Employer Name': '',
+            'Employer Industry': '',
+            'Employment Category': '',
+            'Employment Type': '',
+            'Job Function': '',
+            'Job Position': '',
+            'Found through Handshake': '',
+            'Employed During Education': '',
+            'Internship': '',
+            'Continuing Education School': 'Norwegian University of Science and Technology',
+            'Continuing Education Level': 'Non-Degree Seeking',
+            'Continuing Education Major': 'Healthcare',
+            'Is Fellowship?': 'Yes',
+            'Fellowship Name': 'Fulbright',
+            'Military Branch': '',
+            'Military Rank': '',
+            'Specialization': '',
+            'Still Looking Option': '',
+            'Not Seeking Option': '',
+            'Location': 'Trondheim, Norway',
+            'Offer Date': '',
+            'Accept Date': '',
+            'Start Date': '',
+            'Salary': '',
+            'Bonus Amount': '',
+            'Other Compensation': '',
+            'Authorized to work in US?': '',
+            'Submitted By': 'James Staffmember',
+            'Knowledge Response?': 'Yes',
+            'Knowledge Source': 'LinkedIn'
+        }
+        self.employment_response = ResponseParser(employment_fellowship).parse()
+        self.cont_ed_response = ResponseParser(cont_ed_fellowship).parse()
+
+    def test_parser_recodes_employment_fellowship_outcome(self):
+        self.assertEqual('Fellowship', self.employment_response.metadata.outcome)
+
+    def test_parser_recodes_cont_ed_fellowship_outcome(self):
+        self.assertEqual('Fellowship', self.cont_ed_response.metadata.outcome)
+
+    def test_parser_recodes_employer_as_fellowship_org(self):
+        self.assertEqual('Coro', self.employment_response.fellowship_data.fellowship_org)
+
+    def test_parser_recodes_cont_ed_school_as_fellowship_org(self):
+        self.assertEqual('Norwegian University of Science and Technology', self.cont_ed_response.fellowship_data.fellowship_org)
+
+    def test_parser_parses_fellowship_name(self):
+        self.assertEqual('Fulbright', self.cont_ed_response.fellowship_data.fellowship_name)
 
 
 class TestJHEDParser(unittest.TestCase):
