@@ -2,12 +2,14 @@ import os
 import unittest
 from datetime import datetime
 
-from src.extract.custom_parsers import FDS2018CustomParser, CustomParser, NullCustomParser
-from src.extract.extract_responses import extract_raw_responses, ResponseParser
+from src.extract.custom_parsers import FDS2018CustomParser, FDS2019CustomParser, CustomParser, NullCustomParser
+from src.extract.response_extractor import ResponseExtractor
+from src.extract.response_parser import ResponseParser
 from src.extract.value_parser import JHEDParser
 from src.survey_response import SurveyResponse
 
-FILEPATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_input_data.csv')
+TEST_RESPONSE_DATA_FILEPATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_response_data.csv')
+TEST_DUPLICATE_FIELDS_FILEPATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_duplicate_fields.csv')
 
 
 def make_response(fields: dict, custom_parser: CustomParser = NullCustomParser()) -> SurveyResponse:
@@ -78,6 +80,23 @@ def make_response(fields: dict, custom_parser: CustomParser = NullCustomParser()
 
 class TestExtractResponses(unittest.TestCase):
 
+    def test_extract_responses(self):
+        self.assertEqual(3, len(ResponseExtractor(TEST_RESPONSE_DATA_FILEPATH).extract()))
+
+    def test_extract_recodes_duplicated_field_names(self):
+        expected = [{
+            'field_a': 'A',
+            'field_b': 'B',
+            'field_b_1': 'B1',
+            'field_c': 'C',
+            'field_c_1': 'C1',
+            'field_c_2': 'C2',
+        }]
+        self.assertEqual(expected, ResponseExtractor(TEST_DUPLICATE_FIELDS_FILEPATH).extract())
+
+
+class TestResponseParser(unittest.TestCase):
+
     def setUp(self):
         self.fds_2018_parser = FDS2018CustomParser()
         self.continuing_education_response = make_response({
@@ -115,9 +134,6 @@ class TestExtractResponses(unittest.TestCase):
             'Knowledge Response?': 'Yes',
             'Knowledge Source': 'Survey Response'
         })
-
-    def test_extract_responses(self):
-        self.assertEqual(3, len(extract_raw_responses(FILEPATH)))
 
     def test_date_fields_are_parsed_into_datetime_objects(self):
         self.assertEqual(datetime(2018, 10, 5, 14, 30, 6), self.working_response.metadata.response_datetime_utc)
@@ -168,25 +184,6 @@ class TestExtractResponses(unittest.TestCase):
     def test_parser_parses_other_outcomes_fields_correctly(self):
         self.assertEqual('Employment', self.working_response.other_outcomes.still_looking_option)
         self.assertEqual('Just Cause', self.working_response.other_outcomes.not_seeking_option)
-
-
-class Test2018ExtraQuestionsParser(unittest.TestCase):
-
-    def test_2018_parser_parses_custom_questions_correctly(self):
-        response = make_response({
-            'At the time you accepted your current position, did you accept it with the intention that it would only be a temporary, “gap year” position, before applying to graduate or professional school in the next year or two?': 'Yes',
-            'During your time at Hopkins, how many *unpaid* internships did you participate in? An internship is a form of experiential education that integrates knowledge and theory learned in the classroom, with practical application and skill development *in a professional, work setting*. ': '3',
-            'During your time at Hopkins, how many *paid* internships did you participate in? An internship is a form of experiential education that integrates knowledge and theory learned in the classroom, with practical application and skill development *in a professional, work setting*.': '1',
-            'During your time at Hopkins, how many unique *unpaid* research experiences (outside the classroom) did you participate in? Research is inquiry or investigation conducted by an undergraduate student that makes an original intellectual or creative contribution to a discipline. It can encompass a wide variety of activities including but not limited to: lab research, design projects, entrepreneurship, etc.': '0',
-            'During your time at Hopkins, how many unique *paid* research experiences (outside the classroom) did you participate in? Research is inquiry or investigation conducted by an undergraduate student that makes an original intellectual or creative contribution to a discipline. It can encompass a wide variety of activities including but not limited to: lab research, design projects, entrepreneurship, etc.': '2'
-        }, FDS2018CustomParser())
-        self.assertEqual(True, response.custom.is_gap_year)
-        self.assertEqual(3, response.custom.unpaid_internships_count)
-        self.assertEqual(1, response.custom.paid_internships_count)
-        self.assertEqual(4, response.custom.all_internships_count)
-        self.assertEqual(0, response.custom.unpaid_research_count)
-        self.assertEqual(2, response.custom.paid_research_count)
-        self.assertEqual(2, response.custom.all_research_count)
 
 
 class TestParsingFellowshipResponses(unittest.TestCase):
@@ -252,3 +249,68 @@ class TestJHEDParser(unittest.TestCase):
 
     def test_parses_jhed_from_plain_jhed(self):
         self.assertEqual('cstudent3', JHEDParser('cstudent3').parse())
+
+
+class Test2018ExtraQuestionsParser(unittest.TestCase):
+
+    def test_2018_parser_parses_custom_questions_correctly(self):
+        response = make_response({
+            'At the time you accepted your current position, did you accept it with the intention that it would only be a temporary, “gap year” position, before applying to graduate or professional school in the next year or two?': 'Yes',
+            'During your time at Hopkins, how many *unpaid* internships did you participate in? An internship is a form of experiential education that integrates knowledge and theory learned in the classroom, with practical application and skill development *in a professional, work setting*. ': '3',
+            'During your time at Hopkins, how many *paid* internships did you participate in? An internship is a form of experiential education that integrates knowledge and theory learned in the classroom, with practical application and skill development *in a professional, work setting*.': '1',
+            'During your time at Hopkins, how many unique *unpaid* research experiences (outside the classroom) did you participate in? Research is inquiry or investigation conducted by an undergraduate student that makes an original intellectual or creative contribution to a discipline. It can encompass a wide variety of activities including but not limited to: lab research, design projects, entrepreneurship, etc.': '0',
+            'During your time at Hopkins, how many unique *paid* research experiences (outside the classroom) did you participate in? Research is inquiry or investigation conducted by an undergraduate student that makes an original intellectual or creative contribution to a discipline. It can encompass a wide variety of activities including but not limited to: lab research, design projects, entrepreneurship, etc.': '2'
+        }, FDS2018CustomParser())
+        self.assertEqual(True, response.custom.is_gap_year)
+        self.assertEqual(3, response.custom.unpaid_internships_count)
+        self.assertEqual(1, response.custom.paid_internships_count)
+        self.assertEqual(4, response.custom.all_internships_count)
+        self.assertEqual(0, response.custom.unpaid_research_count)
+        self.assertEqual(2, response.custom.paid_research_count)
+        self.assertEqual(2, response.custom.all_research_count)
+
+
+class Test2019ExtraQuestionsParser(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.response = make_response({
+            'At the time you accepted your current position, did you accept it with the intention that it would only be a temporary, “gap year” position, before applying to graduate or professional school in the next year or two?': 'No',
+            'Did you participate in an internship during your time at Hopkins? An internship is a form of experiential education that integrates knowledge and theory learned in the classroom, with practical application and skill development *in a professional, work setting*.': 'Yes',
+            'During your time at Hopkins, how many *unpaid* internships did you participate in? An internship is a form of experiential education that integrates knowledge and theory learned in the classroom, with practical application and skill development *in a professional, work setting*.': '3',
+            'During your time at Hopkins, how many *paid* internships did you participate in? An internship is a form of experiential education that integrates knowledge and theory learned in the classroom, with practical application and skill development *in a professional, work setting*.': '7',
+            'I gained valuable skills': 'Somewhat Agree',
+            'I connected with a mentor': 'Strongly Disagree',
+            'This internship may lead to future opportunities': 'Strongly Agree',
+            'I gained clarity about what I find meaningful': '',
+            'Did you participate in research during your time at Hopkins? Research is inquiry or investigation conducted by an undergraduate student that makes an original intellectual or creative contribution to a discipline. It can encompass a wide variety of activities including but not limited to: lab research, design projects, entrepreneurship, etc.': 'No',
+            'During your time at Hopkins, how many unique *unpaid* research experiences (outside the classroom) did you participate in? Research is inquiry or investigation conducted by an undergraduate student that makes an original intellectual or creative contribution to a discipline. It can encompass a wide variety of activities including but not limited to: lab research, design projects, entrepreneurship, etc.': '2',
+            'During your time at Hopkins, how many unique *paid* research experiences (outside the classroom) did you participate in? Research is inquiry or investigation conducted by an undergraduate student that makes an original intellectual or creative contribution to a discipline. It can encompass a wide variety of activities including but not limited to: lab research, design projects, entrepreneurship, etc.': '1',
+            'I gained valuable skills_1': 'Strongly Agree',
+            'I connected with a mentor_1': 'Neither Agree nor Disagree',
+            'This research experience may lead to future opportunities': 'Strongly Disagree',
+            'I gained clarity about what I find meaningful_1': '',
+            'I gained clarity about what I find meaningful_2': 'Somewhat Agree',
+        }, FDS2019CustomParser())
+
+    def test_counts_are_parsed_correctly(self):
+        self.assertEqual(3, self.response.custom.internships.unpaid_count)
+        self.assertEqual(7, self.response.custom.internships.paid_count)
+        self.assertEqual(10, self.response.custom.internships.all_count)
+        self.assertEqual(2, self.response.custom.research.unpaid_count)
+        self.assertEqual(1, self.response.custom.research.paid_count)
+        self.assertEqual(3, self.response.custom.research.all_count)
+
+    def test_gap_year_questions_is_parsed_correctly(self):
+        self.assertEqual(False, self.response.custom.is_gap_year)
+
+    def test_internship_satisfaction_questions(self):
+        self.assertEqual('Somewhat Agree', self.response.custom.internships.gained_valuable_skills)
+        self.assertEqual('Strongly Disagree', self.response.custom.internships.connected_with_mentor)
+        self.assertEqual('Strongly Agree', self.response.custom.internships.may_lead_to_future_opps)
+        self.assertIsNone(self.response.custom.internships.gained_clarity)
+
+    def test_research_satisfaction_questions(self):
+        self.assertEqual('Strongly Agree', self.response.custom.research.gained_valuable_skills)
+        self.assertEqual('Neither Agree nor Disagree', self.response.custom.research.connected_with_mentor)
+        self.assertEqual('Strongly Disagree', self.response.custom.research.may_lead_to_future_opps)
+        self.assertEqual('Somewhat Agree', self.response.custom.research.gained_clarity)

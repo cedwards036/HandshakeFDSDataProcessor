@@ -1,6 +1,20 @@
 import unittest
 
 from src.survey_response import FDS2018CustomQuestions
+from src.survey_response.custom_questions import ActivityQuestionSet
+
+
+class TestActivityQuestionSet(unittest.TestCase):
+
+    def test_all_count_updates_automatically(self):
+        test_activity_set = ActivityQuestionSet()
+        self.assertIsNone(test_activity_set.all_count)
+        test_activity_set.unpaid_count = 2
+        self.assertEqual(2, test_activity_set.all_count)
+        test_activity_set.paid_count = 3
+        self.assertEqual(5, test_activity_set.all_count)
+        test_activity_set.unpaid_count = 10
+        self.assertEqual(13, test_activity_set.all_count)
 
 
 class Test2018CustomQuestions(unittest.TestCase):

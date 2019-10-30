@@ -1,14 +1,9 @@
-from typing import List, Union
+from typing import Union
 
 from src.extract.custom_parsers import CustomParser, NullCustomParser
-from src.extract.file_utils import read_csv
 from src.extract.value_parser import (StringParser, DateParser, DatetimeParser,
                                       YesNoParser, IntParser, JHEDParser)
 from src.survey_response import SurveyResponse
-
-
-def extract_raw_responses(filepath: str) -> List[dict]:
-    return read_csv(filepath)
 
 
 class ResponseParser:
