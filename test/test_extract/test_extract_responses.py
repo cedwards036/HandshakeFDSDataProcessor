@@ -124,7 +124,7 @@ class TestResponseParser(unittest.TestCase):
             'Offer Date': '4/20/2017',
             'Accept Date': '4/28/2017',
             'Start Date': '5/25/2017',
-            'Annual Salary': '27560',
+            'Annual Salary': '27560.56',
             'Bonus Amount': '0',
             'Other Compensation': '0',
             'Submitted By': 'Chelsea Student',
@@ -154,7 +154,7 @@ class TestResponseParser(unittest.TestCase):
         self.assertEqual('Medical Scribe', self.working_response.employment.job_title)
         self.assertEqual(True, self.working_response.employment.found_through_handshake)
         self.assertEqual(False, self.working_response.employment.employed_during_education)
-        self.assertEqual(27560, self.working_response.employment.salary)
+        self.assertEqual(27560.56, self.working_response.employment.salary)
         self.assertEqual(0, self.working_response.employment.bonus_amount)
         self.assertEqual(0, self.working_response.employment.other_compensation)
         self.assertIsNone(self.working_response.employment.is_internship)

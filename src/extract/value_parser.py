@@ -49,6 +49,15 @@ class IntParser(ValueParser):
             raise self.UnexpectedValueException(f'Expected value "{self._value}" to be convertible to an int')
 
 
+class FloatParser(ValueParser):
+
+    def parser_func(self):
+        try:
+            return float(self._value)
+        except ValueError:
+            raise self.UnexpectedValueException(f'Expected value "{self._value}" to be convertible to a float')
+
+
 class YesNoParser(ValueParser):
 
     def parser_func(self):
