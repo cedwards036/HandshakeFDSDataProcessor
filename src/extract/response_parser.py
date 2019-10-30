@@ -1,8 +1,9 @@
-from typing import Union
+from typing import Union, List
 
 from src.extract.custom_parsers import CustomParser, NullCustomParser
 from src.extract.value_parser import (StringParser, DateParser, DatetimeParser,
                                       YesNoParser, IntParser, JHEDParser)
+from src.response_dataset import ResponseDataset
 from src.survey_response import SurveyResponse
 
 
@@ -37,7 +38,7 @@ class ResponseParser:
         self._response.employment.job_title = self._parse_job_title()
         self._response.employment.found_through_handshake = YesNoParser(self._raw_data['Found through Handshake']).parse()
         self._response.employment.employed_during_education = YesNoParser(self._raw_data['Employed During Education']).parse()
-        self._response.employment.salary = IntParser(self._raw_data['Salary']).parse()
+        self._response.employment.salary = IntParser(self._raw_data['Annual Salary']).parse()
         self._response.employment.bonus_amount = IntParser(self._raw_data['Bonus Amount']).parse()
         self._response.employment.other_compensation = IntParser(self._raw_data['Other Compensation']).parse()
         self._response.employment.is_internship = YesNoParser(self._raw_data['Internship']).parse()
@@ -118,3 +119,10 @@ class ResponseParser:
     def _parse_other_outcomes_data(self):
         self._response.other_outcomes.still_looking_option = StringParser(self._raw_data['Still Looking Option']).parse()
         self._response.other_outcomes.not_seeking_option = StringParser(self._raw_data['Not Seeking Option']).parse()
+
+
+def parse_responses(raw_data: List[dict], custom_parser: CustomParser) -> ResponseDataset:
+    result = ResponseDataset()
+    for row in raw_data:
+        result.add_response(ResponseParser(row, custom_parser).parse())
+    return result

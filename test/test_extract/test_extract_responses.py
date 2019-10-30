@@ -65,7 +65,7 @@ def make_response(fields: dict, custom_parser: CustomParser = NullCustomParser()
         'Offer Date': '',
         'Accept Date': '',
         'Start Date': '',
-        'Salary': '',
+        'Annual Salary': '',
         'Bonus Amount': '',
         'Other Compensation': '',
         'Authorized to work in US?': '',
@@ -80,16 +80,13 @@ def make_response(fields: dict, custom_parser: CustomParser = NullCustomParser()
 
 class TestExtractResponses(unittest.TestCase):
 
-    def test_extract_responses(self):
-        self.assertEqual(3, len(ResponseExtractor(TEST_RESPONSE_DATA_FILEPATH).extract()))
-
     def test_extract_recodes_duplicated_field_names(self):
         expected = [{
-            'field_a': 'A',
-            'field_b': 'B',
-            'field_b_1': 'B1',
-            'field_c': 'C',
-            'field_c_1': 'C1',
+            'field_a': 'A      ',
+            'field_b': 'B      ',
+            'field_b_1': 'B1     ',
+            'field_c': 'C      ',
+            'field_c_1': 'C1     ',
             'field_c_2': 'C2',
         }]
         self.assertEqual(expected, ResponseExtractor(TEST_DUPLICATE_FIELDS_FILEPATH).extract())
@@ -127,7 +124,7 @@ class TestResponseParser(unittest.TestCase):
             'Offer Date': '4/20/2017',
             'Accept Date': '4/28/2017',
             'Start Date': '5/25/2017',
-            'Salary': '27560',
+            'Annual Salary': '27560',
             'Bonus Amount': '0',
             'Other Compensation': '0',
             'Submitted By': 'Chelsea Student',
