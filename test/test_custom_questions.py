@@ -1,7 +1,7 @@
 import unittest
 
-from src.survey_response import FDS2018CustomQuestions
-from src.survey_response.custom_questions import ActivityQuestionSet
+from src.survey_data_model import FDS2018CustomQuestions
+from src.survey_data_model.survey_response.custom_questions import ActivityQuestionSet
 
 
 class TestActivityQuestionSet(unittest.TestCase):

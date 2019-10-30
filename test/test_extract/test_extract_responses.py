@@ -6,7 +6,7 @@ from src.extract.custom_parsers import FDS2018CustomParser, FDS2019CustomParser,
 from src.extract.response_extractor import ResponseExtractor
 from src.extract.response_parser import ResponseParser
 from src.extract.value_parser import JHEDParser
-from src.survey_response import SurveyResponse
+from src.survey_data_model import SurveyResponse
 
 TEST_RESPONSE_DATA_FILEPATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_response_data.csv')
 TEST_DUPLICATE_FIELDS_FILEPATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_duplicate_fields.csv')

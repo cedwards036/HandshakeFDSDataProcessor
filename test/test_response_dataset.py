@@ -1,7 +1,7 @@
 import unittest
 
-from src.response_dataset import ResponseDataset
-from src.survey_response import SurveyResponse
+from src.survey_data_model import SurveyResponse
+from src.survey_data_model.response_dataset import ResponseDataset
 
 
 class TestResponseDataset(unittest.TestCase):

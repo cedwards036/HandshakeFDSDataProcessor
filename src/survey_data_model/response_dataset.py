@@ -1,6 +1,6 @@
 from typing import List
 
-from src.survey_response import SurveyResponse
+from src.survey_data_model import SurveyResponse
 
 
 class ResponseDataset:

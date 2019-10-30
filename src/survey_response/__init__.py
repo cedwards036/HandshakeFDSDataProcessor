@@ -1,2 +1,0 @@
-from src.survey_response.custom_questions import FDS2018CustomQuestions, FDS2019CustomQuestions
-from src.survey_response.survey_response import SurveyResponse

@@ -3,8 +3,8 @@ from typing import Union, List
 from src.extract.custom_parsers import CustomParser, NullCustomParser
 from src.extract.value_parser import (StringParser, DateParser, DatetimeParser,
                                       YesNoParser, IntParser, JHEDParser, FloatParser)
-from src.response_dataset import ResponseDataset
-from src.survey_response import SurveyResponse
+from src.survey_data_model import ResponseDataset
+from src.survey_data_model import SurveyResponse
 
 
 class ResponseParser:

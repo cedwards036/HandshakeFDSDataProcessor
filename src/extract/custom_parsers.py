@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 
 from src.extract.value_parser import YesNoParser, IntParser, StringParser
-from src.survey_response import SurveyResponse
-from src.survey_response.custom_questions import (CustomQuestions,
-                                                  FDS2018CustomQuestions,
-                                                  FDS2019CustomQuestions,
-                                                  NullCustomQuestions)
+from src.survey_data_model import (CustomQuestions,
+                                   FDS2018CustomQuestions,
+                                   FDS2019CustomQuestions,
+                                   NullCustomQuestions)
+from src.survey_data_model import SurveyResponse
 
 
 class CustomParser(ABC):

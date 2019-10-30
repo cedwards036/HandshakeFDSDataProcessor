@@ -1,4 +1,4 @@
-from src.response_dataset import ResponseDataset
+from src.survey_data_model.response_dataset import ResponseDataset
 
 
 def assert_response_datasets_are_equal(test_obj, expected: ResponseDataset, actual: ResponseDataset):
