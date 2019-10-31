@@ -11,6 +11,10 @@ class TestLocation(unittest.TestCase):
     def test_null_location(self):
         self.assert_full_loc('', Location())
 
+    def test_passing_empty_string_counts_as_null(self):
+        self.assertEqual(Location(), Location(city='', state='', country=''))
+        self.assertEqual(Location(city='Hong Kong'), Location(city='Hong Kong', state='', country=''))
+
     def test_full_location_is_set_given_only_one_location_field(self):
         self.assert_full_loc('Baltimore', Location(city='Baltimore'))
         self.assert_full_loc('Maryland', Location(state='Maryland'))

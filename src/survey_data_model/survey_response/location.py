@@ -1,7 +1,9 @@
 class Location:
 
     def __init__(self, city: str = None, state: str = None, country: str = None):
-        self._data = [city, state, country]
+        self._data = [self._convert_empty_str_to_none(city),
+                      self._convert_empty_str_to_none(state),
+                      self._convert_empty_str_to_none(country)]
 
     @property
     def city(self) -> str:
@@ -9,7 +11,14 @@ class Location:
 
     @city.setter
     def city(self, new_city: str):
-        self._data[0] = new_city
+        self._data[0] = self._convert_empty_str_to_none(new_city)
+
+    @staticmethod
+    def _convert_empty_str_to_none(value: str):
+        if value == '':
+            return None
+        else:
+            return value
 
     @property
     def state(self) -> str:
@@ -17,7 +26,7 @@ class Location:
 
     @state.setter
     def state(self, new_state: str):
-        self._data[1] = new_state
+        self._data[1] = self._convert_empty_str_to_none(new_state)
 
     @property
     def country(self) -> str:
@@ -25,18 +34,22 @@ class Location:
 
     @country.setter
     def country(self, new_country: str):
-        self._data[2] = new_country
+        self._data[2] = self._convert_empty_str_to_none(new_country)
 
     @property
     def full_location(self) -> str:
         result = ''
         for value in self._data:
             if value:
-                if not result:
-                    result = value
-                else:
-                    result += f', {value}'
+                result += self._format_value(result, value)
         return result
+
+    @staticmethod
+    def _format_value(result, value) -> str:
+        if not result:
+            return value
+        else:
+            return f', {value}'
 
     def to_dict(self):
         return {

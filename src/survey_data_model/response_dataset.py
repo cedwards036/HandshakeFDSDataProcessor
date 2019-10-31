@@ -36,5 +36,5 @@ class ResponseDataset:
     def __len__(self) -> int:
         return len(self._responses)
 
-    def __iter__(self):
+    def __iter__(self) -> SurveyResponse:
         yield from self._responses
