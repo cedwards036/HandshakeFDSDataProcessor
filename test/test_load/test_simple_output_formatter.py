@@ -11,7 +11,7 @@ class TestSimpleOutputFormatter(unittest.TestCase):
         response.metadata.location.city = 'Folsom'
         response.metadata.location.state = 'California'
         response.metadata.location.country = 'United States'
-        formatted_response = SimpleOutputFormatter(response).format()
+        formatted_response = SimpleOutputFormatter().format(response)
         self.assertEqual('Folsom', formatted_response['city'])
         self.assertEqual('California', formatted_response['state'])
         self.assertEqual('United States', formatted_response['country'])

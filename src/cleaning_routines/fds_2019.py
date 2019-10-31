@@ -1,5 +1,5 @@
 from src.extract import FDS2019CustomParser, extract
-from src.load import SimpleOutputFormatter, CSVWriter
+from src.load import SimpleOutputFormatter, CSVWriter, FDS2019CustomFormatter, format_dataset
 
 
 UNDERGRAD_FILEPATH = 'S:\\Reporting & Data\\First Destination Survey\\2019\\extra_data_gathering\\undergrad_responses_2019_10_29_11_38.csv'
@@ -8,8 +8,8 @@ OUTPUT_FILEPATH = 'S:\\Reporting & Data\\First Destination Survey\\2019\\fds_201
 
 def main():
     dataset = extract(UNDERGRAD_FILEPATH, FDS2019CustomParser())
-    dataset.apply(lambda response: print(response.to_dict()))
-    formatted_dataset = [SimpleOutputFormatter(response).format() for response in dataset]
+    response_formatter = SimpleOutputFormatter(FDS2019CustomFormatter())
+    formatted_dataset = format_dataset(dataset, response_formatter)
     CSVWriter(formatted_dataset).write(OUTPUT_FILEPATH)
 
 
