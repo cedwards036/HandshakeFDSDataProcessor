@@ -10,6 +10,11 @@ class TestValueReplacer(unittest.TestCase):
         replacer.add_mapping('NYC', 'New York')
         self.assertEqual('New York', replacer.get_mapping('NYC'))
 
+    def test_just_returns_a_value_if_value_is_already_clean(self):
+        replacer = ValueMapping()
+        replacer.add_mapping('NYC', 'New York')
+        self.assertEqual('New York', replacer.get_mapping('New York'))
+
     def test_throws_exception_if_value_is_not_known(self):
         replacer = ValueMapping()
         with self.assertRaises(ValueMapping.NoKnownMappingException):
