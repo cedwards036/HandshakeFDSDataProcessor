@@ -1,4 +1,4 @@
-class ValueMapping:
+class ValueMap:
 
     def __init__(self):
         self._mapping = {}

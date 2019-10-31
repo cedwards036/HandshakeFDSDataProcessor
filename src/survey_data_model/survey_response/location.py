@@ -47,3 +47,6 @@ class Location:
 
     def __eq__(self, other: 'Location'):
         return self.to_dict() == other.to_dict()
+
+    def __hash__(self):
+        return hash((self.city, self.state, self.country))

@@ -26,6 +26,10 @@ class ResponseDataset:
     def to_list_of_dict(self) -> List[dict]:
         return [response.to_dict() for response in self._responses]
 
+    def apply(self, func: callable):
+        for response in self._responses:
+            func(response)
+
     def __eq__(self, other: 'ResponseDataset') -> bool:
         return self.to_list_of_dict() == other.to_list_of_dict()
 
