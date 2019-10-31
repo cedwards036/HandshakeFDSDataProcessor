@@ -5,8 +5,9 @@ from datetime import datetime
 from src.extract.custom_parsers import FDS2018CustomParser, FDS2019CustomParser, CustomParser, NullCustomParser
 from src.extract.response_extractor import ResponseExtractor
 from src.extract.response_parser import ResponseParser
-from src.extract.value_parser import JHEDParser
+from src.extract.value_parser import JHEDParser, LocationParser
 from src.survey_data_model import SurveyResponse
+from src.survey_data_model.survey_response.location import Location
 
 TEST_RESPONSE_DATA_FILEPATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_response_data.csv')
 TEST_DUPLICATE_FIELDS_FILEPATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_duplicate_fields.csv')
@@ -173,7 +174,7 @@ class TestResponseParser(unittest.TestCase):
         self.assertEqual('659756', self.working_response.metadata.response_id)
         self.assertEqual(datetime(2018, 10, 5, 14, 30, 6), self.working_response.metadata.response_datetime_utc)
         self.assertEqual('Working', self.working_response.metadata.outcome)
-        self.assertEqual('Washington, District of Columbia, United States', self.working_response.metadata.location)
+        self.assertEqual('Washington, District of Columbia, United States', self.working_response.metadata.location.full_location)
         self.assertEqual('Chelsea Student', self.working_response.metadata.submitted_by)
         self.assertEqual(True, self.working_response.metadata.is_knowledge_response)
         self.assertEqual('Survey Response', self.working_response.metadata.knowledge_source)
@@ -246,6 +247,31 @@ class TestJHEDParser(unittest.TestCase):
 
     def test_parses_jhed_from_plain_jhed(self):
         self.assertEqual('cstudent3', JHEDParser('cstudent3').parse())
+
+
+class TestLocationParser(unittest.TestCase):
+
+    def assert_location_parsed_into(self, expected: Location, input_str: str):
+        self.assertEqual(expected.to_dict(), LocationParser(input_str).parse().to_dict())
+
+    def test_parses_empty_str_into_empty_location(self):
+        self.assert_location_parsed_into(Location(), '')
+
+    def test_parses_commaless_string_into_city_field(self):
+        self.assert_location_parsed_into(Location(city='Baltimore'), 'Baltimore')
+        self.assert_location_parsed_into(Location(city='Some - complex ##58$ str'), 'Some - complex ##58$ str')
+
+    def test_trims_input(self):
+        self.assert_location_parsed_into(Location(city='Baltimore'), '     Baltimore ')
+
+    def test_parses_single_comma_string_into_city_and_state(self):
+        self.assert_location_parsed_into(Location(city='Baltimore', state='United States'), ' Baltimore,  United States ')
+
+    def test_parses_two_comma_string_into_full_location(self):
+        self.assert_location_parsed_into(Location(city='Baltimore', state='Maryland', country='United States'), ' Baltimore,  Maryland,United States ')
+
+    def test_parses_everything_after_the_second_comma_into_country(self):
+        self.assert_location_parsed_into(Location(city='Baltimore', state='Maryland', country='United States, Earth, The Universe'), ' Baltimore,  Maryland,United States , Earth,The Universe ')
 
 
 class Test2018ExtraQuestionsParser(unittest.TestCase):

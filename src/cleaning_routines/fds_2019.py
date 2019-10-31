@@ -6,7 +6,7 @@ UNDERGRAD_FILEPATH = 'S:\\Reporting & Data\\First Destination Survey\\2019\\extr
 
 def main():
     dataset = extract(UNDERGRAD_FILEPATH, FDS2019CustomParser())
-
+    print(dataset)
 
 if __name__ == '__main__':
     main()

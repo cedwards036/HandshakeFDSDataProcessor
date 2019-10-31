@@ -2,7 +2,8 @@ from typing import Union, List
 
 from src.extract.custom_parsers import CustomParser, NullCustomParser
 from src.extract.value_parser import (StringParser, DateParser, DatetimeParser,
-                                      YesNoParser, IntParser, JHEDParser, FloatParser)
+                                      YesNoParser, IntParser, JHEDParser, FloatParser,
+                                      LocationParser)
 from src.survey_data_model import ResponseDataset
 from src.survey_data_model import SurveyResponse
 
@@ -88,7 +89,7 @@ class ResponseParser:
         self._response.metadata.response_id = StringParser(self._raw_data['Id']).parse()
         self._response.metadata.response_datetime_utc = DatetimeParser(self._raw_data['Response Date']).parse()
         self._response.metadata.outcome = self._parse_outcome()
-        self._response.metadata.location = StringParser(self._raw_data['Location']).parse()
+        self._response.metadata.location = LocationParser(self._raw_data['Location']).parse()
         self._response.metadata.submitted_by = StringParser(self._raw_data['Submitted By']).parse()
         self._response.metadata.is_knowledge_response = YesNoParser(self._raw_data['Knowledge Response?']).parse()
         self._response.metadata.knowledge_source = StringParser(self._raw_data['Knowledge Source']).parse()

@@ -2,11 +2,13 @@ import re
 from abc import ABC, abstractmethod
 from datetime import datetime
 
+from src.survey_data_model.survey_response.location import Location
+
 
 class ValueParser(ABC):
 
     def __init__(self, value: str):
-        self._value = value
+        self._value = value.strip()
 
     def parse(self):
         if self._value == '':
@@ -79,3 +81,24 @@ class JHEDParser(ValueParser):
 
     def _extract_jhed_from_valid_value(self) -> str:
         return re.match(r'^([a-zA-Z]+\d+)(@johnshopkins\.edu)?$', self._value).groups()[0]
+
+
+class LocationParser(ValueParser):
+
+    def parse(self):
+        if self._value == '':
+            return Location()
+        else:
+            return self.parser_func()
+
+    def parser_func(self):
+        values = [value.strip() for value in self._value.split(',')]
+        if len(values) == 1:
+            return Location(city=values[0])
+        elif len(values) == 2:
+            return Location(city=values[0], state=values[1])
+        elif len(values) == 3:
+            return Location(city=values[0], state=values[1], country=values[2])
+        else:
+            country = ', '.join(values[2:])
+            return Location(city=values[0], state=values[1], country=country)
