@@ -28,3 +28,9 @@ class ResponseDataset:
 
     def __eq__(self, other: 'ResponseDataset') -> bool:
         return self.to_list_of_dict() == other.to_list_of_dict()
+
+    def __len__(self) -> int:
+        return len(self._responses)
+
+    def __iter__(self):
+        yield from self._responses

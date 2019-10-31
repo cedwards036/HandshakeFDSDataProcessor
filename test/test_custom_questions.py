@@ -16,6 +16,11 @@ class TestActivityQuestionSet(unittest.TestCase):
         test_activity_set.unpaid_count = 10
         self.assertEqual(13, test_activity_set.all_count)
 
+    def test_all_count_stays_none_if_a_count_is_set_to_none(self):
+        test_activity_set = ActivityQuestionSet()
+        test_activity_set.unpaid_count = None
+        self.assertIsNone(test_activity_set.all_count)
+
 
 class Test2018CustomQuestions(unittest.TestCase):
 

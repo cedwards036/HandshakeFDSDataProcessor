@@ -23,9 +23,15 @@ class IntResponse:
 
     def _add(self, other):
         if self._value == None:
-            return other
+            return self._add_none(other)
         else:
             return self._value + other
+
+    def _add_none(self, other):
+        if isinstance(other, IntResponse) and other.value is None:
+            return None
+        else:
+            return other
 
 
 class ActivityQuestionSet:
