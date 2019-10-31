@@ -21,6 +21,11 @@ class TestActivityQuestionSet(unittest.TestCase):
         test_activity_set.unpaid_count = None
         self.assertIsNone(test_activity_set.all_count)
 
+    def test_all_count_is_an_int_after_adding_null_unpaid_to_int_paid(self):
+        test_activity_set = ActivityQuestionSet()
+        test_activity_set.paid_count = 1
+        self.assertEqual(1, test_activity_set.all_count)
+
 
 class Test2018CustomQuestions(unittest.TestCase):
 

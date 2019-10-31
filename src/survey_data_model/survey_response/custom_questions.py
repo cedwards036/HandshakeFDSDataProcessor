@@ -23,13 +23,13 @@ class IntResponse:
 
     def _add(self, other):
         if self._value == None:
-            return self._add_none(other)
+            return self._add_none_to_other(other)
         else:
             return self._value + other
 
-    def _add_none(self, other):
-        if isinstance(other, IntResponse) and other.value is None:
-            return None
+    def _add_none_to_other(self, other):
+        if isinstance(other, IntResponse):
+            return other.value
         else:
             return other
 
