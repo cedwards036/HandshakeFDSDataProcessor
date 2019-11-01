@@ -89,6 +89,7 @@ class TestExtractResponses(unittest.TestCase):
             'field_c': 'C      ',
             'field_c_1': 'C1     ',
             'field_c_2': 'C2',
+            'field_d': ''
         }]
         self.assertEqual(expected, ResponseExtractor(TEST_DUPLICATE_FIELDS_FILEPATH).extract())
 

@@ -3,6 +3,7 @@ class ValueMap:
     def __init__(self):
         self._mapping = {}
         self._clean_values = set()
+        self._clean_values.add(None)
 
     def add_mapping(self, value, replacement):
         self._mapping[value] = replacement
@@ -23,3 +24,6 @@ class ValueMap:
     class NoKnownMappingException(Exception):
         def __init__(self, message):
             super().__init__(message)
+
+    def __eq__(self, other: 'ValueMap') -> bool:
+        return self._mapping == other._mapping

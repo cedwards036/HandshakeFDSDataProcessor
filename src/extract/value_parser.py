@@ -39,7 +39,10 @@ class DatetimeParser(ValueParser):
 class DateParser(ValueParser):
 
     def parser_func(self):
-        return datetime.strptime(self._value, '%m/%d/%Y')
+        try:
+            return datetime.strptime(self._value, '%m/%d/%Y')
+        except ValueError:
+            return datetime.strptime(self._value, '%Y-%m-%d')
 
 
 class IntParser(ValueParser):

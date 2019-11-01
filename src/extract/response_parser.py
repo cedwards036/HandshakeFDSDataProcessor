@@ -2,7 +2,7 @@ from typing import Union, List
 
 from src.extract.custom_parsers import CustomParser, NullCustomParser
 from src.extract.value_parser import (StringParser, DateParser, DatetimeParser,
-                                      YesNoParser, IntParser, JHEDParser, FloatParser,
+                                      YesNoParser, JHEDParser, FloatParser,
                                       LocationParser)
 from src.survey_data_model import ResponseDataset
 from src.survey_data_model import SurveyResponse
@@ -40,8 +40,8 @@ class ResponseParser:
         self._response.employment.found_through_handshake = YesNoParser(self._raw_data['Found through Handshake']).parse()
         self._response.employment.employed_during_education = YesNoParser(self._raw_data['Employed During Education']).parse()
         self._response.employment.salary = FloatParser(self._raw_data['Annual Salary']).parse()
-        self._response.employment.bonus_amount = IntParser(self._raw_data['Bonus Amount']).parse()
-        self._response.employment.other_compensation = IntParser(self._raw_data['Other Compensation']).parse()
+        self._response.employment.bonus_amount = FloatParser(self._raw_data['Bonus Amount']).parse()
+        self._response.employment.other_compensation = FloatParser(self._raw_data['Other Compensation']).parse()
         self._response.employment.is_internship = YesNoParser(self._raw_data['Internship']).parse()
         self._response.employment.offer_date = DateParser(self._raw_data['Offer Date']).parse()
         self._response.employment.accept_date = DateParser(self._raw_data['Accept Date']).parse()

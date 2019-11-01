@@ -5,6 +5,10 @@ from src.transform.value_map import ValueMap
 
 class TestValueReplacer(unittest.TestCase):
 
+    def test_maps_none_to_none(self):
+        replacer = ValueMap()
+        self.assertEqual(None, replacer.get_mapping(None))
+
     def test_replaces_known_value(self):
         replacer = ValueMap()
         replacer.add_mapping('NYC', 'New York')
