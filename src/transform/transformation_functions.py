@@ -16,16 +16,26 @@ class Mappings:
 
     def __init__(self, mapping_filepaths: dict):
         self._mapping_filepaths = mapping_filepaths
-        self.location_map = self._get_location_map()
-        self.employer_name_map = self._get_employer_name_map()
+        self._load_location_map()
+        self._load_employer_name_map()
+        self._load_cont_ed_maps()
 
-    def _get_location_map(self):
+    def _load_location_map(self):
         raw_data = csv_to_list_of_dicts(self._mapping_filepaths['location'])
-        return build_location_map(raw_data)
+        self.location_map = build_location_map(raw_data)
 
-    def _get_employer_name_map(self):
+    def _load_employer_name_map(self):
         raw_data = csv_to_list_of_dicts(self._mapping_filepaths['employer_name'])
-        return build_value_map(raw_data, 'old_value', 'new_value')
+        self.employer_name_map = build_value_map(raw_data, 'old_value', 'new_value')
+
+    def _load_cont_ed_maps(self):
+        self._read_cont_ed_file()
+        self.college_map = build_value_map(self._cont_ed_data, 'email', 'clean_college')
+        self.major_map = build_value_map(self._cont_ed_data, 'email', 'clean_major')
+        self.degree_map = build_value_map(self._cont_ed_data, 'email', 'degree')
+
+    def _read_cont_ed_file(self):
+        self._cont_ed_data = csv_to_list_of_dicts(self._mapping_filepaths['cont_ed'])
 
 
 class ResponseCleaner:
@@ -38,6 +48,7 @@ class ResponseCleaner:
         self._clean_locations()
         self._set_is_jhu()
         self._clean_employer_names()
+        self._clean_cont_ed_data()
 
     def _clean_locations(self):
         self._response.metadata.location = self._mappings.location_map.get_mapping(self._response.metadata.location)
@@ -47,3 +58,9 @@ class ResponseCleaner:
 
     def _clean_employer_names(self):
         self._response.employment.employer_name = self._mappings.employer_name_map.get_mapping(self._response.employment.employer_name)
+
+    def _clean_cont_ed_data(self):
+        if self._response.metadata.outcome == 'Continuing Education':
+            self._response.cont_ed.school = self._mappings.college_map.get_mapping(self._response.student.email)
+            self._response.cont_ed.major = self._mappings.major_map.get_mapping(self._response.student.email)
+            self._response.cont_ed.degree = self._mappings.degree_map.get_mapping(self._response.student.email)

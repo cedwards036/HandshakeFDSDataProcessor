@@ -2,12 +2,13 @@ from src.extract import FDS2019CustomParser, extract
 from src.load import SimpleOutputFormatter, CSVWriter, FDS2019CustomFormatter, format_dataset
 from src.transform import transform_2019_fds_data
 
-UNDERGRAD_FILEPATH = 'S:\\Reporting & Data\\First Destination Survey\\2019\\extra_data_gathering\\undergrad_responses_2019_11_01_09_10.csv'
+UNDERGRAD_FILEPATH = 'S:\\Reporting & Data\\First Destination Survey\\2019\\raw_response_data\\undergrad_responses_2019_11_01_02_15.csv'
 OUTPUT_FILEPATH = 'S:\\Reporting & Data\\First Destination Survey\\2019\\fds_2019_cleaned_data.csv'
 
 mapping_filepaths = {
     'employer_name': 'S:\\Reporting & Data\\First Destination Survey\\2019\\value_mapping_files\\employer_name_mapping.csv',
-    'location': 'S:\\Reporting & Data\\First Destination Survey\\2019\\value_mapping_files\\location_mapping.csv'
+    'location': 'S:\\Reporting & Data\\First Destination Survey\\2019\\value_mapping_files\\location_mapping.csv',
+    'cont_ed': 'S:\\Reporting & Data\\First Destination Survey\\2019\\value_mapping_files\\cont_ed_data_mapping.csv'
 }
 
 def main():
