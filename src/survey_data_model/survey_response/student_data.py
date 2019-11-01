@@ -2,6 +2,7 @@ class StudentData:
 
     def __init__(self):
         self.username = None
+        self.email = None
         self.jhed = None
         self.full_name = None
         self.jhu_colleges = None
@@ -13,6 +14,7 @@ class StudentData:
     def to_dict(self) -> dict:
         return {
             'username': self.username,
+            'email': self.email,
             'jhed': self.jhed,
             'full_name': self.full_name,
             'jhu_colleges': self.jhu_colleges,

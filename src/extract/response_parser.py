@@ -27,6 +27,7 @@ class ResponseParser:
 
     def _parse_student_fields(self):
         self._response.student.username = StringParser(self._raw_data['Username']).parse()
+        self._response.student.email = StringParser(self._raw_data['School Email']).parse()
         self._response.student.jhed = JHEDParser(self._raw_data['Auth Identifier']).parse()
         self._response.student.full_name = StringParser(self._raw_data['Name']).parse()
 

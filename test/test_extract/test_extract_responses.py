@@ -168,6 +168,7 @@ class TestResponseParser(unittest.TestCase):
 
     def test_parser_parses_student_fields_correctly(self):
         self.assertEqual('HYU4IP', self.working_response.student.username)
+        self.assertEqual('cstudent3@jhu.edu', self.working_response.student.email)
         self.assertEqual('cstudent3', self.working_response.student.jhed)
         self.assertEqual('Chelsea Student', self.working_response.student.full_name)
 
