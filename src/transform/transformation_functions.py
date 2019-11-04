@@ -33,6 +33,7 @@ class Mappings:
         self.college_map = build_value_map(self._cont_ed_data, 'email', 'clean_college')
         self.major_map = build_value_map(self._cont_ed_data, 'email', 'clean_major')
         self.degree_map = build_value_map(self._cont_ed_data, 'email', 'degree')
+        self.major_group_map = build_value_map(self._cont_ed_data, 'email', 'major_group')
 
     def _read_cont_ed_file(self):
         self._cont_ed_data = csv_to_list_of_dicts(self._mapping_filepaths['cont_ed'])
@@ -64,3 +65,4 @@ class ResponseCleaner:
             self._response.cont_ed.school = self._mappings.college_map.get_mapping(self._response.student.email)
             self._response.cont_ed.major = self._mappings.major_map.get_mapping(self._response.student.email)
             self._response.cont_ed.degree = self._mappings.degree_map.get_mapping(self._response.student.email)
+            self._response.cont_ed.major_group = self._mappings.major_group_map.get_mapping(self._response.student.email)
