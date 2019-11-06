@@ -8,7 +8,9 @@ class StudentData:
         self.jhu_degrees = []
         self.gender = None
         self.visa_status = None
-        self.is_authorized_to_work_in_us = None
+        self.is_first_gen = None
+        self.is_pell_eligible = None
+        self.is_urm = None
 
     def to_dict(self) -> dict:
         return {
@@ -18,8 +20,10 @@ class StudentData:
             'full_name': self.full_name,
             'jhu_degrees': self.jhu_degrees,
             'gender': self.gender,
-            'visa_status': None,
-            'is_authorized_to_work_in_us': self.is_authorized_to_work_in_us
+            'visa_status': self.visa_status,
+            'is_first_gen': self.is_first_gen,
+            'is_pell_eligible': self.is_pell_eligible,
+            'is_urm': self.is_urm
         }
 
     def __eq__(self, other: 'StudentData') -> bool:

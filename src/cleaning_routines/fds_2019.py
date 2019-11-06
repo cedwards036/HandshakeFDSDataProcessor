@@ -9,7 +9,8 @@ mapping_filepaths = {
     'employer_name': 'S:\\Reporting & Data\\First Destination Survey\\2019\\value_mapping_files\\employer_name_mapping.csv',
     'location': 'S:\\Reporting & Data\\First Destination Survey\\2019\\value_mapping_files\\location_mapping.csv',
     'cont_ed': 'S:\\Reporting & Data\\First Destination Survey\\2019\\value_mapping_files\\cont_ed_data_mapping.csv',
-    'jhu_degree': 'S:\\Reporting & Data\\First Destination Survey\\2019\\value_mapping_files\\student_jhu_degree_mapping.csv'
+    'jhu_degree': 'S:\\Reporting & Data\\First Destination Survey\\2019\\value_mapping_files\\student_jhu_degree_mapping.csv',
+    'demographics': 'S:\\Reporting & Data\\First Destination Survey\\2019\\value_mapping_files\\student_demographic_mapping.csv'
 }
 
 def main():
