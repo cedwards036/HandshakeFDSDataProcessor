@@ -1,4 +1,7 @@
+from typing import List
+
 from src.load.response_formatter import ResponseFormatter
+from src.survey_data_model import JHUDegree
 from src.survey_data_model import SurveyResponse
 
 
@@ -9,6 +12,7 @@ class SimpleOutputFormatter(ResponseFormatter):
         self._flatten_location_fields()
         self._flatten_jhu_degrees()
         self._custom_formatter.format(self._result)
+        self._result = self._column_order.apply_to(self._result)
         return self._result
 
     def _flatten_location_fields(self):
@@ -16,28 +20,32 @@ class SimpleOutputFormatter(ResponseFormatter):
         del self._result['location']
 
     def _flatten_jhu_degrees(self):
-        if not self._result['jhu_degrees']:
-            self._set_degree_fields_for_record_without_degree_data()
+        self._result.update(_DegreeFormatter(self._result['jhu_degrees']).format())
+
+
+class _DegreeFormatter:
+
+    def __init__(self, degrees: List[JHUDegree]):
+        self._degrees = degrees
+
+    def format(self) -> dict:
+        self._result = {'jhu_degrees': set(), 'jhu_majors': set(), 'jhu_colleges': set()}
+        self._parse_degree_data_into_result_dict()
+        self._format_result()
+        return self._result
+
+    def _parse_degree_data_into_result_dict(self):
+        for degree_record in self._degrees:
+            self._result['jhu_degrees'].add(degree_record.degree)
+            self._result['jhu_majors'].add(degree_record.major)
+            self._result['jhu_colleges'].add(degree_record.college)
+
+    def _format_result(self):
+        for field in self._result:
+            self._result[field] = self._format_field(field)
+
+    def _format_field(self, field):
+        if not self._result[field]:
+            return None
         else:
-            self._set_degree_fields()
-
-    def _set_degree_fields_for_record_without_degree_data(self):
-        self._result['jhu_degrees'] = None
-        self._result['jhu_majors'] = None
-        self._result['jhu_colleges'] = None
-
-    def _set_degree_fields(self):
-        formatted_degree_info = self._build_formatted_degree_info_dict()
-        self._result['jhu_degrees'] = formatted_degree_info['jhu_degrees']
-        self._result['jhu_majors'] = formatted_degree_info['jhu_majors']
-        self._result['jhu_colleges'] = formatted_degree_info['jhu_colleges']
-
-    def _build_formatted_degree_info_dict(self) -> dict:
-        formatted_degree_info = {'jhu_degrees': set(), 'jhu_majors': set(), 'jhu_colleges': set()}
-        for degree_record in self._result['jhu_degrees']:
-            formatted_degree_info['jhu_degrees'].add(degree_record.degree)
-            formatted_degree_info['jhu_majors'].add(degree_record.major)
-            formatted_degree_info['jhu_colleges'].add(degree_record.college)
-        for field in formatted_degree_info:
-            formatted_degree_info[field] = '; '.join(sorted(formatted_degree_info[field]))
-        return formatted_degree_info
+            return '; '.join(sorted(self._result[field]))
