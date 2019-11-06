@@ -5,8 +5,7 @@ class StudentData:
         self.email = None
         self.jhed = None
         self.full_name = None
-        self.jhu_colleges = None
-        self.jhu_majors = None
+        self.jhu_degrees = []
         self.gender = None
         self.visa_status = None
         self.is_authorized_to_work_in_us = None
@@ -17,8 +16,7 @@ class StudentData:
             'email': self.email,
             'jhed': self.jhed,
             'full_name': self.full_name,
-            'jhu_colleges': self.jhu_colleges,
-            'jhu_majors': self.jhu_majors,
+            'jhu_degrees': self.jhu_degrees,
             'gender': self.gender,
             'visa_status': None,
             'is_authorized_to_work_in_us': self.is_authorized_to_work_in_us

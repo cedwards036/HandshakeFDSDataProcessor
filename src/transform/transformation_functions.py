@@ -18,6 +18,7 @@ class Mappings:
         self._load_location_map()
         self._load_employer_name_map()
         self._load_cont_ed_maps()
+        self._load_jhu_degree_map()
 
     def _load_location_map(self):
         raw_data = csv_to_list_of_dicts(self._mapping_filepaths['location'])
@@ -28,14 +29,15 @@ class Mappings:
         self.employer_name_map = ValueMapBuilder.build_cached_value_map(raw_data, 'old_value', 'new_value')
 
     def _load_cont_ed_maps(self):
-        self._read_cont_ed_file()
-        self.college_map = ValueMapBuilder.build_value_map(self._cont_ed_data, 'email', 'clean_college')
-        self.major_map = ValueMapBuilder.build_value_map(self._cont_ed_data, 'email', 'clean_major')
-        self.degree_map = ValueMapBuilder.build_value_map(self._cont_ed_data, 'email', 'degree')
-        self.major_group_map = ValueMapBuilder.build_value_map(self._cont_ed_data, 'email', 'major_group')
+        raw_data = csv_to_list_of_dicts(self._mapping_filepaths['cont_ed'])
+        self.college_map = ValueMapBuilder.build_value_map(raw_data, 'email', 'clean_college')
+        self.major_map = ValueMapBuilder.build_value_map(raw_data, 'email', 'clean_major')
+        self.degree_map = ValueMapBuilder.build_value_map(raw_data, 'email', 'degree')
+        self.major_group_map = ValueMapBuilder.build_value_map(raw_data, 'email', 'major_group')
 
-    def _read_cont_ed_file(self):
-        self._cont_ed_data = csv_to_list_of_dicts(self._mapping_filepaths['cont_ed'])
+    def _load_jhu_degree_map(self):
+        raw_data = csv_to_list_of_dicts(self._mapping_filepaths['jhu_degree'])
+        self.jhu_degree_map = ValueMapBuilder.build_jhu_degree_map(raw_data)
 
 
 class ResponseCleaner:
@@ -49,6 +51,7 @@ class ResponseCleaner:
         self._set_is_jhu()
         self._clean_employer_names()
         self._clean_cont_ed_data()
+        self._add_jhu_degree_info()
 
     def _clean_locations(self):
         self._response.metadata.location = self._mappings.location_map.get_mapping(self._response.metadata.location)
@@ -65,3 +68,6 @@ class ResponseCleaner:
             self._response.cont_ed.major = self._mappings.major_map.get_mapping(self._response.student.email)
             self._response.cont_ed.degree = self._mappings.degree_map.get_mapping(self._response.student.email)
             self._response.cont_ed.major_group = self._mappings.major_group_map.get_mapping(self._response.student.email)
+
+    def _add_jhu_degree_info(self):
+        self._response.student.jhu_degrees = self._mappings.jhu_degree_map.get_mapping(self._response.student.email)
