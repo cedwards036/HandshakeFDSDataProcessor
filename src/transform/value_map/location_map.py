@@ -1,11 +1,8 @@
-from src.survey_data_model.survey_response.location import Location
-from src.transform.value_map import ValueMap
+from src.survey_data_model import Location
+from src.transform.value_map.cached_value_map import CachedValueMap
 
 
-class LocationMap(ValueMap):
-
-    def add_mapping(self, value: str, replacement: Location):
-        super().add_mapping(value, replacement)
+class LocationMap(CachedValueMap):
 
     def get_mapping(self, loc: Location) -> Location:
         if loc in self._clean_values:

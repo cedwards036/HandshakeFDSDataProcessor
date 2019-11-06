@@ -1,8 +1,7 @@
 from src.survey_data_model import ResponseDataset, SurveyResponse
 from src.transform.csv_utils import csv_to_list_of_dicts
 from src.transform.is_jhu import is_jhu
-from src.transform.value_map import build_location_map
-from src.transform.value_map.build_value_map import build_value_map
+from src.transform.value_map import ValueMapBuilder
 
 
 def transform_2019_fds_data(dataset: ResponseDataset, mapping_filepaths: dict) -> ResponseDataset:
@@ -22,18 +21,18 @@ class Mappings:
 
     def _load_location_map(self):
         raw_data = csv_to_list_of_dicts(self._mapping_filepaths['location'])
-        self.location_map = build_location_map(raw_data)
+        self.location_map = ValueMapBuilder.build_location_map(raw_data)
 
     def _load_employer_name_map(self):
         raw_data = csv_to_list_of_dicts(self._mapping_filepaths['employer_name'])
-        self.employer_name_map = build_value_map(raw_data, 'old_value', 'new_value')
+        self.employer_name_map = ValueMapBuilder.build_cached_value_map(raw_data, 'old_value', 'new_value')
 
     def _load_cont_ed_maps(self):
         self._read_cont_ed_file()
-        self.college_map = build_value_map(self._cont_ed_data, 'email', 'clean_college')
-        self.major_map = build_value_map(self._cont_ed_data, 'email', 'clean_major')
-        self.degree_map = build_value_map(self._cont_ed_data, 'email', 'degree')
-        self.major_group_map = build_value_map(self._cont_ed_data, 'email', 'major_group')
+        self.college_map = ValueMapBuilder.build_value_map(self._cont_ed_data, 'email', 'clean_college')
+        self.major_map = ValueMapBuilder.build_value_map(self._cont_ed_data, 'email', 'clean_major')
+        self.degree_map = ValueMapBuilder.build_value_map(self._cont_ed_data, 'email', 'degree')
+        self.major_group_map = ValueMapBuilder.build_value_map(self._cont_ed_data, 'email', 'major_group')
 
     def _read_cont_ed_file(self):
         self._cont_ed_data = csv_to_list_of_dicts(self._mapping_filepaths['cont_ed'])

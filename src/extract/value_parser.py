@@ -2,7 +2,7 @@ import re
 from abc import ABC, abstractmethod
 from datetime import datetime
 
-from src.survey_data_model.survey_response.location import Location
+from src.survey_data_model import Location
 
 
 class ValueParser(ABC):
