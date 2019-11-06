@@ -1,7 +1,7 @@
 from typing import List
 
 from src.survey_data_model.survey_response.location import Location
-from src.transform.location_map import LocationMap
+from src.transform.value_map import LocationMap
 
 
 def build_location_map(raw_mapping_data: List[dict]) -> LocationMap:

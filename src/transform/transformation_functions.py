@@ -1,8 +1,8 @@
 from src.survey_data_model import ResponseDataset, SurveyResponse
-from src.transform.build_value_map import build_value_map
 from src.transform.csv_utils import csv_to_list_of_dicts
 from src.transform.is_jhu import is_jhu
-from src.transform.location_map import build_location_map
+from src.transform.value_map import build_location_map
+from src.transform.value_map.build_value_map import build_value_map
 
 
 def transform_2019_fds_data(dataset: ResponseDataset, mapping_filepaths: dict) -> ResponseDataset:

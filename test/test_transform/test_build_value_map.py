@@ -1,7 +1,7 @@
 import unittest
 
-from src.transform.build_value_map import build_value_map
 from src.transform.value_map import ValueMap
+from src.transform.value_map.build_value_map import build_value_map
 
 
 class TestBuildValueMap(unittest.TestCase):

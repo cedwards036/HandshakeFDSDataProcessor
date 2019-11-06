@@ -1,7 +1,7 @@
 import unittest
 
 from src.survey_data_model.survey_response.location import Location
-from src.transform.location_map import build_location_map
+from src.transform.value_map import build_location_map
 
 
 class TestLocationMapBuilder(unittest.TestCase):
