@@ -5,7 +5,7 @@ from src.survey_data_model import JHUDegree
 from src.survey_data_model import SurveyResponse
 
 
-class SimpleOutputFormatter(ResponseFormatter):
+class ShortformFormatter(ResponseFormatter):
 
     def format(self, response: SurveyResponse) -> List[dict]:
         self._result = response.to_dict()

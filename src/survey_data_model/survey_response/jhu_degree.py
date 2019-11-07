@@ -1,6 +1,9 @@
+from typing import Union
+
+
 class JHUDegree:
 
-    def __init__(self, degree: str, major: str, college: str):
+    def __init__(self, degree: Union[str, None], major: Union[str, None], college: Union[str, None]):
         self.degree = degree
         self.major = major
         self.college = college
