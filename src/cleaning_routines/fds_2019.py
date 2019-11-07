@@ -19,7 +19,6 @@ column_order = ColumnOrder([
     'email',
     'jhed',
     'full_name',
-    'jhu_degrees',
     'jhu_majors',
     'jhu_colleges',
     'gender',

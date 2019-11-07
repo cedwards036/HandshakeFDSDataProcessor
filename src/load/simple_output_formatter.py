@@ -12,8 +12,7 @@ class SimpleOutputFormatter(ResponseFormatter):
         self._flatten_location_fields()
         self._flatten_jhu_degrees()
         self._custom_formatter.format(self._result)
-        self._result = self._column_order.apply_to(self._result)
-        return self._result
+        return self._column_order.apply_to(self._result)
 
     def _flatten_location_fields(self):
         self._result.update(self._result['location'])
@@ -21,6 +20,7 @@ class SimpleOutputFormatter(ResponseFormatter):
 
     def _flatten_jhu_degrees(self):
         self._result.update(_DegreeFormatter(self._result['jhu_degrees']).format())
+        del self._result['jhu_degrees']
 
 
 class _DegreeFormatter:
@@ -29,15 +29,14 @@ class _DegreeFormatter:
         self._degrees = degrees
 
     def format(self) -> dict:
-        self._result = {'jhu_degrees': set(), 'jhu_majors': set(), 'jhu_colleges': set()}
+        self._result = {'jhu_majors': set(), 'jhu_colleges': set()}
         self._parse_degree_data_into_result_dict()
         self._format_result()
         return self._result
 
     def _parse_degree_data_into_result_dict(self):
         for degree_record in self._degrees:
-            self._result['jhu_degrees'].add(degree_record.degree)
-            self._result['jhu_majors'].add(degree_record.major)
+            self._result['jhu_majors'].add(f'{degree_record.degree}: {degree_record.major}')
             self._result['jhu_colleges'].add(degree_record.college)
 
     def _format_result(self):

@@ -19,9 +19,13 @@ class TestSimpleOutputFormatter(unittest.TestCase):
         with self.assertRaises(KeyError):
             formatted_response['location']
 
+    def test_removes_degree_field(self):
+        formatted_response = SimpleOutputFormatter().format(SurveyResponse())
+        with self.assertRaises(KeyError):
+            formatted_response['jhu_degrees']
+
     def test_flattens_degree_fields_given_no_degrees(self):
         formatted_response = SimpleOutputFormatter().format(SurveyResponse())
-        self.assertIsNone(formatted_response['jhu_degrees'])
         self.assertIsNone(formatted_response['jhu_majors'])
         self.assertIsNone(formatted_response['jhu_colleges'])
 
@@ -29,8 +33,7 @@ class TestSimpleOutputFormatter(unittest.TestCase):
         response = SurveyResponse()
         response.student.jhu_degrees = [JHUDegree(degree='B.S.', major='Comp Sci', college='WSE')]
         formatted_response = SimpleOutputFormatter().format(response)
-        self.assertEqual('B.S.', formatted_response['jhu_degrees'])
-        self.assertEqual('Comp Sci', formatted_response['jhu_majors'])
+        self.assertEqual('B.S.: Comp Sci', formatted_response['jhu_majors'])
         self.assertEqual('WSE', formatted_response['jhu_colleges'])
 
     def test_flattens_multiple_degrees_with_same_college_and_degree(self):
@@ -38,8 +41,7 @@ class TestSimpleOutputFormatter(unittest.TestCase):
         response.student.jhu_degrees = [JHUDegree(degree='B.S.', major='Mech E', college='WSE'),
                                         JHUDegree(degree='B.S.', major='Comp Sci', college='WSE')]
         formatted_response = SimpleOutputFormatter().format(response)
-        self.assertEqual('B.S.', formatted_response['jhu_degrees'])
-        self.assertEqual('Comp Sci; Mech E', formatted_response['jhu_majors'])
+        self.assertEqual('B.S.: Comp Sci; B.S.: Mech E', formatted_response['jhu_majors'])
         self.assertEqual('WSE', formatted_response['jhu_colleges'])
 
     def test_flattens_multiple_degrees_with_different_college_and_degree(self):
@@ -47,6 +49,5 @@ class TestSimpleOutputFormatter(unittest.TestCase):
         response.student.jhu_degrees = [JHUDegree(degree='B.A.', major='English', college='KSAS'),
                                         JHUDegree(degree='B.S.', major='Comp Sci', college='WSE')]
         formatted_response = SimpleOutputFormatter().format(response)
-        self.assertEqual('B.A.; B.S.', formatted_response['jhu_degrees'])
-        self.assertEqual('Comp Sci; English', formatted_response['jhu_majors'])
+        self.assertEqual('B.A.: English; B.S.: Comp Sci', formatted_response['jhu_majors'])
         self.assertEqual('KSAS; WSE', formatted_response['jhu_colleges'])
