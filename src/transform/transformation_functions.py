@@ -1,3 +1,5 @@
+from typing import Union
+
 from src.survey_data_model import ResponseDataset, SurveyResponse
 from src.transform.csv_utils import csv_to_list_of_dicts
 from src.transform.is_jhu import is_jhu
@@ -83,8 +85,19 @@ class ResponseCleaner:
         self._response.student.jhu_degrees = self._mappings.jhu_degree_map.get_mapping(self._response.student.email)
 
     def _add_student_demographic_info(self):
+
+        def _parse_bool(tf_str: str) -> Union[bool, None]:
+            if tf_str == 'T':
+                return True
+            elif tf_str == 'F':
+                return False
+            elif not tf_str:
+                return None
+            else:
+                raise ValueError(f'Cannot convert string "{tf_str}" to bool')
+
         self._response.student.gender = self._mappings.gender_map.get_mapping(self._response.student.email)
-        self._response.student.is_first_gen = self._mappings.first_gen_map.get_mapping(self._response.student.email)
-        self._response.student.is_pell_eligible = self._mappings.pell_map.get_mapping(self._response.student.email)
-        self._response.student.is_urm = self._mappings.urm_map.get_mapping(self._response.student.email)
+        self._response.student.is_first_gen = _parse_bool(self._mappings.first_gen_map.get_mapping(self._response.student.email))
+        self._response.student.is_pell_eligible = _parse_bool(self._mappings.pell_map.get_mapping(self._response.student.email))
+        self._response.student.is_urm = _parse_bool(self._mappings.urm_map.get_mapping(self._response.student.email))
         self._response.student.visa_status = self._mappings.visa_map.get_mapping(self._response.student.email)
