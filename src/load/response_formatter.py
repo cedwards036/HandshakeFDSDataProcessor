@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import List
 
 from src.load.column_order import ColumnOrder, NullColumnOrder
 from src.load.custom_formatters import CustomFormatter, NullCustomFormatter
@@ -13,5 +14,5 @@ class ResponseFormatter(ABC):
         self._column_order = column_order
 
     @abstractmethod
-    def format(self, response: SurveyResponse) -> dict:
+    def format(self, response: SurveyResponse) -> List[dict]:
         pass

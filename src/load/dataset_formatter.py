@@ -5,4 +5,7 @@ from src.survey_data_model import ResponseDataset
 
 
 def format_dataset(dataset: ResponseDataset, formatter: ResponseFormatter) -> List[dict]:
-    return [formatter.format(response) for response in dataset]
+    result = []
+    for response in dataset:
+        result += formatter.format(response)
+    return result

@@ -7,12 +7,12 @@ from src.survey_data_model import SurveyResponse
 
 class SimpleOutputFormatter(ResponseFormatter):
 
-    def format(self, response: SurveyResponse) -> dict:
+    def format(self, response: SurveyResponse) -> List[dict]:
         self._result = response.to_dict()
         self._flatten_location_fields()
         self._flatten_jhu_degrees()
         self._custom_formatter.format(self._result)
-        return self._column_order.apply_to(self._result)
+        return [self._column_order.apply_to(self._result)]
 
     def _flatten_location_fields(self):
         self._result.update(self._result['location'])
