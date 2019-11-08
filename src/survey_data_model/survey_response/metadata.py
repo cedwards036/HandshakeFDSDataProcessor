@@ -5,6 +5,7 @@ class Metadata:
 
     def __init__(self):
         self.response_id = None
+        self.survey_id = None
         self.response_datetime_utc = None
         self.outcome = None
         self.location = Location()
@@ -16,6 +17,7 @@ class Metadata:
     def to_dict(self) -> dict:
         return {
             'response_id': self.response_id,
+            'survey_id': self.survey_id,
             'response_datetime_utc': self.response_datetime_utc,
             'outcome': self.outcome,
             'location': self.location.to_dict(),

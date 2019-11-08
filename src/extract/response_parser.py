@@ -88,6 +88,7 @@ class ResponseParser:
 
     def _parse_metadata(self):
         self._response.metadata.response_id = StringParser(self._raw_data['Id']).parse()
+        self._response.metadata.survey_id = StringParser(self._raw_data['Survey ID']).parse()
         self._response.metadata.response_datetime_utc = DatetimeParser(self._raw_data['Response Date']).parse()
         self._response.metadata.outcome = self._parse_outcome()
         self._response.metadata.location = LocationParser(self._raw_data['Location']).parse()

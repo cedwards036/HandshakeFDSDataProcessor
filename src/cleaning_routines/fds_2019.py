@@ -4,7 +4,7 @@ from src.load import (ShortformFormatter, CSVWriter, FDS2019CustomFormatter,
                       format_dataset, LongformFormatter, FieldRemover)
 from src.transform import transform_2019_fds_data
 
-UNDERGRAD_FILEPATH = 'S:\\Reporting & Data\\First Destination Survey\\2019\\raw_response_data\\undergrad_responses_2019_11_04_15_11.csv'
+INPUT_DATA_FILEPATH = 'S:\\Reporting & Data\\First Destination Survey\\2019\\raw_response_data\\all_responses_2019_11_08.csv'
 SHORTFORM_OUTPUT_FILEPATH = 'S:\\Reporting & Data\\First Destination Survey\\2019\\cleaned_fds_2019_shortform_data.csv'
 LONGFORM_OUTPUT_FILEPATH = 'S:\\Reporting & Data\\First Destination Survey\\2019\\cleaned_fds_2019_longform_data.csv'
 
@@ -19,7 +19,7 @@ mapping_filepaths = {
 field_remover = FieldRemover(['username', 'email', 'jhed', 'full_name', 'submitted_by'])
 
 def main():
-    dataset = extract(UNDERGRAD_FILEPATH, FDS2019CustomParser())
+    dataset = extract(INPUT_DATA_FILEPATH, FDS2019CustomParser())
     cleaned_dataset = transform_2019_fds_data(dataset, mapping_filepaths)
 
     longform_formatter = LongformFormatter(FDS2019CustomFormatter(), longform_column_order)

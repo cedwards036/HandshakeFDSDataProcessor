@@ -16,6 +16,7 @@ TEST_DUPLICATE_FIELDS_FILEPATH = os.path.join(os.path.dirname(os.path.abspath(__
 def make_response(fields: dict, custom_parser: CustomParser = NullCustomParser()) -> SurveyResponse:
     raw_response = {
         'Id': '',
+        'Survey ID': '',
         'Username': '',
         'Auth Identifier': '',
         'Card ID': '',
@@ -105,6 +106,7 @@ class TestResponseParser(unittest.TestCase):
         })
         self.working_response = make_response({
             'Id': '659756',
+            'Survey ID': '2384',
             'Username': 'HYU4IP',
             'Auth Identifier': 'cstudent3@johnshopkins.edu',
             'Name': 'Chelsea Student',
@@ -174,6 +176,7 @@ class TestResponseParser(unittest.TestCase):
 
     def test_parser_parses_metadata_correctly(self):
         self.assertEqual('659756', self.working_response.metadata.response_id)
+        self.assertEqual('2384', self.working_response.metadata.survey_id)
         self.assertEqual(datetime(2018, 10, 5, 14, 30, 6), self.working_response.metadata.response_datetime_utc)
         self.assertEqual('Working', self.working_response.metadata.outcome)
         self.assertEqual('Washington, District of Columbia, United States', self.working_response.metadata.location.full_location)
