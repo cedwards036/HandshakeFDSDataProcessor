@@ -4,16 +4,21 @@ from src.load import (ShortformFormatter, CSVWriter, FDS2019CustomFormatter,
                       format_dataset, LongformFormatter, FieldRemover)
 from src.transform import transform_2019_fds_data
 
-INPUT_DATA_FILEPATH = 'S:\\Reporting & Data\\First Destination Survey\\2019\\raw_response_data\\all_responses_2019_11_08.csv'
+INPUT_DATA_FILEPATH = 'S:\\Reporting & Data\\First Destination Survey\\2019\\raw_response_data\\all_responses_2019_12_17.csv'
 SHORTFORM_OUTPUT_FILEPATH = 'S:\\Reporting & Data\\First Destination Survey\\2019\\cleaned_fds_2019_shortform_data.csv'
 LONGFORM_OUTPUT_FILEPATH = 'S:\\Reporting & Data\\First Destination Survey\\2019\\cleaned_fds_2019_longform_data.csv'
+MAPPING_FILES_DIR = 'S:\\Reporting & Data\\First Destination Survey\\2019\\value_mapping_files'
 
 mapping_filepaths = {
-    'employer_name': 'S:\\Reporting & Data\\First Destination Survey\\2019\\value_mapping_files\\employer_name_mapping.csv',
-    'location': 'S:\\Reporting & Data\\First Destination Survey\\2019\\value_mapping_files\\location_mapping.csv',
-    'cont_ed': 'S:\\Reporting & Data\\First Destination Survey\\2019\\value_mapping_files\\cont_ed_data_mapping.csv',
-    'jhu_degree': 'S:\\Reporting & Data\\First Destination Survey\\2019\\value_mapping_files\\student_jhu_degree_mapping.csv',
-    'demographics': 'S:\\Reporting & Data\\First Destination Survey\\2019\\value_mapping_files\\student_demographic_mapping.csv'
+    'employer_name': f'{MAPPING_FILES_DIR}\\employer_name_mapping.csv',
+    'location': f'{MAPPING_FILES_DIR}\\location_mapping.csv',
+    'missing_locations': f'{MAPPING_FILES_DIR}\\missing_location_mapping.csv',
+    'cont_ed': f'{MAPPING_FILES_DIR}\\cont_ed_data_mapping.csv',
+    'jhu_degree': f'{MAPPING_FILES_DIR}\\student_jhu_degree_mapping.csv',
+    'demographics': f'{MAPPING_FILES_DIR}\\student_demographic_mapping.csv',
+    'job_function': f'{MAPPING_FILES_DIR}\\job_function_mapping.csv',
+    'salary': f'{MAPPING_FILES_DIR}\\salary_mapping.csv',
+    'outcome': f'{MAPPING_FILES_DIR}\\outcome_mapping.csv'
 }
 
 field_remover = FieldRemover(['username', 'email', 'jhed', 'full_name', 'submitted_by'])
