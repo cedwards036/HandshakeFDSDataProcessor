@@ -3,7 +3,7 @@ from typing import Union
 from src.survey_data_model import ResponseDataset, SurveyResponse
 from src.transform.csv_utils import csv_to_list_of_dicts
 from src.transform.is_jhu import is_jhu
-from src.transform.value_map import ValueMapBuilder
+from src.transform.value_map import ValueMapBuilder, ValueMap
 
 
 def transform_2019_fds_data(dataset: ResponseDataset, mapping_filepaths: dict) -> ResponseDataset:
@@ -18,18 +18,30 @@ class Mappings:
     def __init__(self, mapping_filepaths: dict):
         self._mapping_filepaths = mapping_filepaths
         self._load_location_map()
+        self._load_missing_locations_map()
         self._load_employer_name_map()
+        self._load_job_function_map()
         self._load_cont_ed_maps()
         self._load_jhu_degree_map()
         self._load_student_demographics_map()
+        self._load_salary_map()
+        self._load_outcome_map()
 
     def _load_location_map(self):
         raw_data = csv_to_list_of_dicts(self._mapping_filepaths['location'])
-        self.location_map = ValueMapBuilder.build_location_map(raw_data)
+        self.location_map = ValueMapBuilder.build_cached_location_map(raw_data, 'raw_location')
+
+    def _load_missing_locations_map(self):
+        raw_data = csv_to_list_of_dicts(self._mapping_filepaths['missing_locations'])
+        self.missing_locations_map = ValueMapBuilder.build_location_map(raw_data, 'email')
 
     def _load_employer_name_map(self):
         raw_data = csv_to_list_of_dicts(self._mapping_filepaths['employer_name'])
         self.employer_name_map = ValueMapBuilder.build_cached_value_map(raw_data, 'old_value', 'new_value')
+
+    def _load_job_function_map(self):
+        raw_data = csv_to_list_of_dicts(self._mapping_filepaths['job_function'])
+        self.job_function_map = ValueMapBuilder.build_value_map(raw_data, 'email', 'job_function')
 
     def _load_cont_ed_maps(self):
         raw_data = csv_to_list_of_dicts(self._mapping_filepaths['cont_ed'])
@@ -50,6 +62,14 @@ class Mappings:
         self.urm_map = ValueMapBuilder.build_value_map(raw_data, 'email', 'is_urm')
         self.visa_map = ValueMapBuilder.build_value_map(raw_data, 'email', 'visa_status')
 
+    def _load_salary_map(self):
+        raw_data = csv_to_list_of_dicts(self._mapping_filepaths['salary'])
+        self.salary_map = ValueMapBuilder.build_value_map(raw_data, 'email', 'salary')
+
+    def _load_outcome_map(self):
+        raw_data = csv_to_list_of_dicts(self._mapping_filepaths['outcome'])
+        self.outcome_map = ValueMapBuilder.build_value_map(raw_data, 'email', 'outcome')
+
 
 class ResponseCleaner:
 
@@ -59,20 +79,34 @@ class ResponseCleaner:
 
     def clean(self):
         self._clean_locations()
+        self._add_missing_locations()
         self._set_is_jhu()
         self._clean_employer_names()
+        self._add_job_functions()
         self._clean_cont_ed_data()
         self._add_jhu_degree_info()
         self._add_student_demographic_info()
+        self._clean_salary_values()
+        self._clean_outcomes()
 
     def _clean_locations(self):
         self._response.metadata.location = self._mappings.location_map.get_mapping(self._response.metadata.location)
+
+    def _add_missing_locations(self):
+        try:
+            self._response.metadata.location = self._mappings.missing_locations_map.get_mapping(self._response.student.email)
+        except ValueMap.NoKnownMappingException:
+            pass
 
     def _set_is_jhu(self):
         self._response.metadata.is_jhu = is_jhu(self._response.cont_ed.school) or is_jhu(self._response.employment.employer_name)
 
     def _clean_employer_names(self):
         self._response.employment.employer_name = self._mappings.employer_name_map.get_mapping(self._response.employment.employer_name)
+
+    def _add_job_functions(self):
+        if self._response.metadata.outcome == 'Working':
+            self._response.employment.job_function = self._mappings.job_function_map.get_mapping(self._response.student.email)
 
     def _clean_cont_ed_data(self):
         if self._response.metadata.outcome == 'Continuing Education':
@@ -101,3 +135,15 @@ class ResponseCleaner:
         self._response.student.is_pell_eligible = _parse_bool(self._mappings.pell_map.get_mapping(self._response.student.email))
         self._response.student.is_urm = _parse_bool(self._mappings.urm_map.get_mapping(self._response.student.email))
         self._response.student.visa_status = self._mappings.visa_map.get_mapping(self._response.student.email)
+
+    def _clean_salary_values(self):
+        try:
+            self._response.employment.salary = self._mappings.salary_map.get_mapping(self._response.student.email)
+        except ValueMap.NoKnownMappingException:
+            pass
+
+    def _clean_outcomes(self):
+        try:
+            self._response.metadata.outcome = self._mappings.outcome_map.get_mapping(self._response.student.email)
+        except ValueMap.NoKnownMappingException:
+            pass

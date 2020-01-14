@@ -3,7 +3,6 @@ from typing import List
 from src.survey_data_model import JHUDegree
 from src.survey_data_model import Location
 from src.transform.value_map.cached_value_map import CachedValueMap
-from src.transform.value_map.location_map import LocationMap
 from src.transform.value_map.value_map import ValueMap
 
 
@@ -44,13 +43,20 @@ class ValueMapBuilder:
         return value_map
 
     @staticmethod
-    def build_location_map(raw_mapping_data: List[dict]) -> LocationMap:
-        result = LocationMap()
+    def build_cached_location_map(raw_mapping_data: List[dict], from_field: str) -> CachedValueMap:
+        return ValueMapBuilder._populate_location_map(CachedValueMap(lambda loc: loc.full_location), raw_mapping_data, from_field)
+
+    @staticmethod
+    def build_location_map(raw_mapping_data: List[dict], from_field: str) -> ValueMap:
+        return ValueMapBuilder._populate_location_map(ValueMap(), raw_mapping_data, from_field)
+
+    @staticmethod
+    def _populate_location_map(location_map, raw_mapping_data: List[dict], from_field: str):
         for row in raw_mapping_data:
             clean_location = Location(city=row['city'], state=row['state'], country=row['country'])
-            raw_location = row['raw_location']
-            result.add_mapping(raw_location, clean_location)
-        return result
+            raw_location = row[from_field]
+            location_map.add_mapping(raw_location, clean_location)
+        return location_map
 
     @staticmethod
     def build_jhu_degree_map(raw_mapping_data: List[dict]) -> ValueMap:

@@ -28,14 +28,14 @@ class TestBuildValueMap(unittest.TestCase):
 
     def test_build_mapping_for_empty_location(self):
         test_input = [{'raw_location': '$8jg$gjfi', 'city': '', 'state': '', 'country': ''}]
-        location_map = ValueMapBuilder.build_location_map(test_input)
+        location_map = ValueMapBuilder.build_cached_location_map(test_input, 'raw_location')
         self.assert_mapping_is(Location(), Location('$8jg$gjfi'), location_map)
 
     def test_build_mapping_for_multiple_locations(self):
         test_input = [{'raw_location': 'Folsom', 'city': 'Folsom', 'state': 'California', 'country': 'United States'},
                       {'raw_location': 'New York, New York', 'city': 'New York City', 'state': 'New York', 'country': 'United States'},
                       {'raw_location': 'Beijing, China', 'city': 'Beijing', 'state': '', 'country': 'China'}]
-        location_map = ValueMapBuilder.build_location_map(test_input)
+        location_map = ValueMapBuilder.build_cached_location_map(test_input, 'raw_location')
         self.assert_mapping_is(Location('Folsom', 'California', 'United States'), Location('Folsom'), location_map)
         self.assert_mapping_is(Location('New York City', 'New York', 'United States'), Location('New York, New York'), location_map)
         self.assert_mapping_is(Location('Beijing', None, 'China'), Location('Beijing', 'China'), location_map)
