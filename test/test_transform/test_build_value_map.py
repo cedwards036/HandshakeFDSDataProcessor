@@ -39,3 +39,8 @@ class TestBuildValueMap(unittest.TestCase):
         self.assert_mapping_is(Location('Folsom', 'California', 'United States'), Location('Folsom'), location_map)
         self.assert_mapping_is(Location('New York City', 'New York', 'United States'), Location('New York, New York'), location_map)
         self.assert_mapping_is(Location('Beijing', None, 'China'), Location('Beijing', 'China'), location_map)
+
+    def test_build_multi_field_value_map(self):
+        value_map = ValueMapBuilder.build_multi_field_value_map([{'first_field': 'value1', 'second_field': 'value2', 'third_field': 'value3'}],
+                                                                'first_field', {'second_field', 'third_field'})
+        self.assertEqual({'second_field': 'value2', 'third_field': 'value3'}, value_map.get_mapping('value1'))

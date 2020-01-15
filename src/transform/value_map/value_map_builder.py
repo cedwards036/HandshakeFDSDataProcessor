@@ -37,7 +37,14 @@ class ValueMapBuilder:
         return ValueMapBuilder._build_two_field_value_map(from_field, raw_mapping_data, to_field, CachedValueMap())
 
     @staticmethod
-    def _build_two_field_value_map(from_field, raw_mapping_data, to_field, value_map):
+    def build_multi_field_value_map(raw_mapping_data: List[dict], from_field: str, to_fields: set):
+        value_map = ValueMap()
+        for row in raw_mapping_data:
+            value_map.add_mapping(row[from_field], {to_field: row[to_field] for to_field in to_fields})
+        return value_map
+
+    @staticmethod
+    def _build_two_field_value_map(from_field: str, raw_mapping_data: List[dict], to_field: str, value_map):
         for row in raw_mapping_data:
             value_map.add_mapping(row[from_field], row[to_field])
         return value_map

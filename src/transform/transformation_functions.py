@@ -26,6 +26,7 @@ class Mappings:
         self._load_student_demographics_map()
         self._load_salary_map()
         self._load_outcome_map()
+        self._load_fellowship_recoding_map()
 
     def _load_location_map(self):
         raw_data = csv_to_list_of_dicts(self._mapping_filepaths['location'])
@@ -70,6 +71,10 @@ class Mappings:
         raw_data = csv_to_list_of_dicts(self._mapping_filepaths['outcome'])
         self.outcome_map = ValueMapBuilder.build_value_map(raw_data, 'email', 'outcome')
 
+    def _load_fellowship_recoding_map(self):
+        raw_data = csv_to_list_of_dicts(self._mapping_filepaths['fellowship'])
+        self.fellowship_recoding_map = ValueMapBuilder.build_multi_field_value_map(raw_data, 'email', {'fellowship_org', 'fellowship_name'})
+
 
 class ResponseCleaner:
 
@@ -88,6 +93,7 @@ class ResponseCleaner:
         self._add_student_demographic_info()
         self._clean_salary_values()
         self._clean_outcomes()
+        self._recode_fellowships()
 
     def _clean_locations(self):
         self._response.metadata.location = self._mappings.location_map.get_mapping(self._response.metadata.location)
@@ -145,5 +151,14 @@ class ResponseCleaner:
     def _clean_outcomes(self):
         try:
             self._response.metadata.outcome = self._mappings.outcome_map.get_mapping(self._response.student.email)
+        except ValueMap.NoKnownMappingException:
+            pass
+
+    def _recode_fellowships(self):
+        try:
+            recoding = self._mappings.fellowship_recoding_map.get_mapping(self._response.student.email)
+            self._response.fellowship_data.fellowship_name = recoding['fellowship_name']
+            self._response.fellowship_data.fellowship_org = recoding['fellowship_org']
+            self._response.metadata.outcome = 'Fellowship'
         except ValueMap.NoKnownMappingException:
             pass
