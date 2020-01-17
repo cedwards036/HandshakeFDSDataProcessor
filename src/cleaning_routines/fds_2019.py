@@ -19,7 +19,8 @@ mapping_filepaths = {
     'job_function': f'{MAPPING_FILES_DIR}\\job_function_mapping.csv',
     'salary': f'{MAPPING_FILES_DIR}\\salary_mapping.csv',
     'outcome': f'{MAPPING_FILES_DIR}\\outcome_mapping.csv',
-    'fellowship': f'{MAPPING_FILES_DIR}\\fellowship_recoding.csv'
+    'fellowship': f'{MAPPING_FILES_DIR}\\fellowship_recoding.csv',
+    'employer_industry': f'{MAPPING_FILES_DIR}\\employer_industry_mapping.csv'
 }
 
 field_remover = FieldRemover(['username', 'email', 'jhed', 'full_name', 'submitted_by'])

@@ -20,6 +20,7 @@ class Mappings:
         self._load_location_map()
         self._load_missing_locations_map()
         self._load_employer_name_map()
+        self._load_employer_industry_map()
         self._load_job_function_map()
         self._load_cont_ed_maps()
         self._load_jhu_degree_map()
@@ -39,6 +40,10 @@ class Mappings:
     def _load_employer_name_map(self):
         raw_data = csv_to_list_of_dicts(self._mapping_filepaths['employer_name'])
         self.employer_name_map = ValueMapBuilder.build_cached_value_map(raw_data, 'old_value', 'new_value')
+
+    def _load_employer_industry_map(self):
+        raw_data = csv_to_list_of_dicts(self._mapping_filepaths['employer_industry'])
+        self.employer_industry_map = ValueMapBuilder.build_cached_value_map(raw_data, 'employer', 'industry')
 
     def _load_job_function_map(self):
         raw_data = csv_to_list_of_dicts(self._mapping_filepaths['job_function'])
@@ -87,6 +92,7 @@ class ResponseCleaner:
         self._add_missing_locations()
         self._set_is_jhu()
         self._clean_employer_names()
+        self._clean_employer_industries()
         self._add_job_functions()
         self._clean_cont_ed_data()
         self._add_jhu_degree_info()
@@ -109,6 +115,12 @@ class ResponseCleaner:
 
     def _clean_employer_names(self):
         self._response.employment.employer_name = self._mappings.employer_name_map.get_mapping(self._response.employment.employer_name)
+
+    def _clean_employer_industries(self):
+        try:
+            self._response.employment.employer_industry = self._mappings.employer_industry_map.get_mapping(self._response.employment.employer_name)
+        except ValueMap.NoKnownMappingException:
+            pass
 
     def _add_job_functions(self):
         if self._response.metadata.outcome == 'Working':
