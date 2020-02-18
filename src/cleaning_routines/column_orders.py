@@ -3,6 +3,7 @@ from src.load import ColumnOrder
 shortform_column_order = ColumnOrder([
     'response_id',
     'survey_id',
+    'is_submitted',
     'username',
     'email',
     'jhed',
@@ -67,6 +68,7 @@ shortform_column_order = ColumnOrder([
 longform_column_order = ColumnOrder([
     'response_id',
     'survey_id',
+    'is_submitted',
     'username',
     'email',
     'jhed',

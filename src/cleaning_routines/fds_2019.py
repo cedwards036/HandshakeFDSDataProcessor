@@ -4,7 +4,7 @@ from src.load import (ShortformFormatter, CSVWriter, FDS2019CustomFormatter,
                       format_dataset, LongformFormatter, FieldRemover)
 from src.transform import transform_2019_fds_data
 
-INPUT_DATA_FILEPATH = 'S:\\Reporting & Data\\First Destination Survey\\2019\\raw_response_data\\all_responses_2019_12_17.csv'
+INPUT_DATA_FILEPATH = 'S:\\Reporting & Data\\First Destination Survey\\2019\\raw_response_data\\all_responses_2020_02_18.csv'
 SHORTFORM_OUTPUT_FILEPATH = 'S:\\Reporting & Data\\First Destination Survey\\2019\\cleaned_fds_2019_shortform_data.csv'
 LONGFORM_OUTPUT_FILEPATH = 'S:\\Reporting & Data\\First Destination Survey\\2019\\cleaned_fds_2019_longform_data.csv'
 MAPPING_FILES_DIR = 'S:\\Reporting & Data\\First Destination Survey\\2019\\value_mapping_files'

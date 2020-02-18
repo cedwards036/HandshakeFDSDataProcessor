@@ -115,6 +115,7 @@ class TestResponseParser(unittest.TestCase):
             'Recipient Graduation Date': '5/1/2018',
             'Recipient Education Level': 'Bachelors',
             'Response Date': '2018-10-05 14:30:06 UTC',
+            'Response Status': 'submitted',
             'Outcome': 'Working',
             'Employer Name': 'ScribeAmerica',
             'Employer Industry': 'Healthcare',
@@ -183,6 +184,7 @@ class TestResponseParser(unittest.TestCase):
         self.assertEqual('Chelsea Student', self.working_response.metadata.submitted_by)
         self.assertEqual(True, self.working_response.metadata.is_knowledge_response)
         self.assertEqual('Survey Response', self.working_response.metadata.knowledge_source)
+        self.assertEqual(True, self.working_response.metadata.is_submitted)
 
     def test_parser_parses_other_outcomes_fields_correctly(self):
         self.assertEqual('Employment', self.working_response.other_outcomes.still_looking_option)

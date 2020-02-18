@@ -95,6 +95,7 @@ class ResponseParser:
         self._response.metadata.submitted_by = StringParser(self._raw_data['Submitted By']).parse()
         self._response.metadata.is_knowledge_response = YesNoParser(self._raw_data['Knowledge Response?']).parse()
         self._response.metadata.knowledge_source = StringParser(self._raw_data['Knowledge Source']).parse()
+        self._response.metadata.is_submitted = StringParser(self._raw_data['Response Status']).parse() == 'submitted'
 
     def _parse_outcome(self) -> Union[str, None]:
         if self._response_is_fellowship():

@@ -88,8 +88,8 @@ class ResponseCleaner:
         self._mappings = mappings
 
     def clean(self):
-        self._clean_locations()
         self._add_missing_locations()
+        self._clean_locations()
         self._set_is_jhu()
         self._clean_employer_names()
         self._clean_employer_industries()
@@ -123,11 +123,11 @@ class ResponseCleaner:
             pass
 
     def _add_job_functions(self):
-        if self._response.metadata.outcome == 'Working':
+        if self._response.metadata.outcome == 'Working' and self._response.metadata.is_submitted:
             self._response.employment.job_function = self._mappings.job_function_map.get_mapping(self._response.student.email)
 
     def _clean_cont_ed_data(self):
-        if self._response.metadata.outcome == 'Continuing Education':
+        if self._response.metadata.outcome == 'Continuing Education' and self._response.metadata.is_submitted:
             self._response.cont_ed.school = self._mappings.college_map.get_mapping(self._response.student.email)
             self._response.cont_ed.major = self._mappings.major_map.get_mapping(self._response.student.email)
             self._response.cont_ed.degree = self._mappings.degree_map.get_mapping(self._response.student.email)

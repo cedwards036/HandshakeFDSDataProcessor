@@ -13,6 +13,7 @@ class Metadata:
         self.submitted_by = None
         self.is_knowledge_response = None
         self.knowledge_source = None
+        self.is_submitted = None
 
     def to_dict(self) -> dict:
         return {
@@ -24,7 +25,8 @@ class Metadata:
             'is_jhu': self.is_jhu,
             'submitted_by': self.submitted_by,
             'is_knowledge_response': self.is_knowledge_response,
-            'knowledge_source': self.knowledge_source
+            'knowledge_source': self.knowledge_source,
+            'is_submitted': self.is_submitted
         }
 
     def __eq__(self, other: 'Metadata') -> bool:
